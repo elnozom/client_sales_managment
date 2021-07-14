@@ -1,0 +1,50 @@
+{
+  "message": "hellp",
+  "login": {
+    "username": "username",
+    "password": "password"
+  },
+  "table": {
+    "products": "products",
+    "no_data": "no data",
+    "new_item":"add new itetm",
+    "remember_my_choices":"remember my choices",
+    "limited" : "limited",
+    "not_limited" : "not limited",
+    "stop_sale":"stop sale",
+    "not_stop_sale":"continue sale",
+    "orders": "orders"
+  },
+  "sidebar": {
+    "products": "products",
+    "orders": "orders",
+    "login": "logout"
+  },
+  "form": {
+    "hide_none_required": "hide none required fields",
+    "submit" : "submit", 
+    "login" : "login"
+  },
+  "inputs":{
+    "search":"search",
+    "email":"email",
+    "password":"password"
+  },
+  "columns": {
+    "code": "code",
+    "employee": "employee",
+    "totla": "total",
+    "created_at": "created at",
+    "name": "name",
+    "price": "price",
+    "weight":"weight",
+    "price_range": "price range",
+    "note": "note",
+    "actions": "actions",
+    "limited":"limited",
+    "max_price":"max price",
+    "min_price":"min price",
+    "stop_sale":"stop sale",
+    "qnt": "quantity"
+  }
+}

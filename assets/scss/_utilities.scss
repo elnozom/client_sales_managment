@@ -1,0 +1,114 @@
+// widths & heights
+
+.w-full{
+    width: 100%;
+}
+.h-full{
+    height: 100%;
+}
+.w-screen{
+    width: 100vw;
+}
+.h-screen{
+    height: 100vh;
+}
+.w-large{
+    width: 300px;
+}
+.w-medium {
+    width: 150px;
+}
+
+.w-small {
+    width: 50px;
+}
+
+.h-app-bar{
+    height: var(--app-bar-h) !important;
+}
+
+.m-l-sidebar{
+    margin-left: var(--sidebar-with) !important;
+}
+.m-l-sidebar-variant{
+    margin-left: var(--sidebar-variant-with) !important;
+}
+
+.pt-0{
+    padding-top: 0 !important;
+}
+
+
+
+// flex box
+.flex-center{
+    @include flex-center
+}
+.flex-center-x{
+    @include flex-center-x
+}
+.flex-center-y{
+    @include flex-center-y
+}
+.justify-between{
+    justify-content: space-between !important;
+}
+
+
+// backgrounds & colors
+.black-lighten{
+    background-color: #030303;
+}
+
+// displays
+.relative{
+    position: relative;
+}
+.absolute{
+    position: absolute;
+}
+
+.absolute-t-r{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.fixed{
+    position: fixed;
+}
+
+.fixed-t-r{
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+.z-high{
+    z-index: 100;
+}
+.z-higher{
+    z-index: 200;
+}
+.z-highest{
+    z-index: 1000;
+}
+
+
+.bg-gredient{
+    background: var(--bg-gredient) !important;
+}
+
+
+
+.breadcrumbs{
+    position: absolute;
+    top:var(--app-bar-h);
+    z-index: 0;
+    left: 0;
+    width: 100%;
+    height: 185px;
+    background: var(--main-gredient) !important;
+    @media (max-width:960) {
+        top:var(--md-app-bar-h) !important;
+
+    }
+}

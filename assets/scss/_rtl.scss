@@ -1,0 +1,30 @@
+@font-face {
+    font-family: "kufi";
+    src        : local("kufi"),
+        url(~assets/fonts/Kufi-Regular.ttf) format("truetype");
+}
+
+.v-application--is-rtl {
+    font-family: "Kufi" !important;
+
+    & .mr-4 {
+        margin-right: 0 !important;
+        margin-left : 16px;
+    }
+
+    & .m-l-sidebar {
+        margin-left : auto !important;
+        margin-right: var(--sidebar-with) !important;
+    }
+
+    & .m-l-sidebar-variant {
+        margin-left : auto !important;
+        margin-right: var(--sidebar-variant-with) !important;
+    }
+
+    & .v-list-item--active {
+        border-radius: 5px 0 0 5px !important;
+        margin-right : 0 !important;
+        margin-left  : 10px !important;
+    }
+}

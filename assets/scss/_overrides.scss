@@ -1,0 +1,15 @@
+.v-sheet.v-app-bar.v-toolbar:not(.v-sheet--outlined){
+    box-shadow: none !important;
+}
+.v-main__wrap{
+    // padding-top: 130px;
+}
+.v-data-table > .v-data-table__wrapper > table > tbody > tr > td{
+    max-width: 200px !important;
+}
+.v-data-footer{
+    justify-content: flex-end;
+}
+.v-data-footer__select{
+    display: none !important;
+}

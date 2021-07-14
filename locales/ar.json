@@ -1,0 +1,53 @@
+{
+  "message": "مرحبا",
+  "login": {
+    "username": "الاسم",
+    "password": "كلمة المرور"
+  },
+  "table": {
+    "products": "المنتجات",
+    "no_data": "لايوجد بيانات",
+    "new_item":"اضافة",
+    "remember_my_choices":"تذكر اختياراتي",
+    "edit":"تعديل",
+    "view":"عرض",
+    "delete":"حذف",
+    "limited" : "محدود",
+    "stop_sale": "وقف البيع",
+    "not_stop_sale":"يمكن البيع",
+    "not_limited" : "غير محدود",
+    "orders": "الطلبات"
+  },
+  "sidebar": {
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "login": "تسجيل الدخول"
+  },
+  "form": {
+    "hide_none_required": "اخفاء الحقول الغير مطلوبة",
+    "submit" : "تاكيد", 
+    "login" : "تسجيل الدخول"
+  },
+  "inputs":{
+    "search":"بحث",
+    "email":"البريد الالكنرزمي",
+    "password":"كلمو السر"
+  },
+  "columns": {
+    "code": "الكود",
+    "employee": "الموظف",
+    "totla": "الاجمالي",
+    "created_at": "التاريخ",
+    "name": "الاسم",
+    "price": "السعر",
+    "price_range": "نطاق الاسعار",
+    "note": "ملاحظة",
+    "actions": "الاجرائات",
+    "weight":"الوزن",
+    "limited":"محدود",
+    "max_price":"اعلي سعر",
+    "min_price":"اقل سعر",
+    "stop_sale":"وقف البيع",
+    "qnt": "الكمية"
+  }
+}
