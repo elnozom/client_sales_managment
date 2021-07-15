@@ -13,7 +13,7 @@
 <script>
 import DatatableBuilder from '@/utils/builders/DataTableBuilder.js'
 import DatatableDirector from '@/utils/directors/DataTableDirector.js'
-
+import {checkLoggedIn} from '@/utils/helpers/Global.js'
 export default {
   data() {
     const opts = new DatatableDirector(
@@ -25,6 +25,9 @@ export default {
     return {
       opts
     }
+  },
+  created(){
+    checkLoggedIn(this)
   }
 }
 </script>

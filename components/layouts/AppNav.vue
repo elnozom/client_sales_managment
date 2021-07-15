@@ -57,10 +57,16 @@
         @click.prevent="switchLanguage"
       >mdi-earth</v-icon>
       <v-icon
-        class="pointer"
+        class="pointer mr-4"
         color="white"
         @click.prevent="switchTheme"
       >mdi-weather-night</v-icon>
+      <v-icon
+        class="pointer"
+        color="white"
+        @click.prevent="logout"
+      >mdi-logout-variant</v-icon>
+      
     </v-app-bar>
     <!-- <div class="breadcrumbs"></div> -->
   </div>
@@ -85,7 +91,14 @@ export default {
     switchLanguage(){
       const locale = this.$vuetify.rtl ? 'en' : 'ar'
       switchLanguage(locale , this)
+    },
+    logout(){
+      this.$store.dispatch('auth/logout')
+      .then(() => {
+        this.$router.push('/login')
+      })
     }
+    
   }
 }
 </script>

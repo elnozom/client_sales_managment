@@ -26,12 +26,15 @@
   "form": {
     "hide_none_required": "اخفاء الحقول الغير مطلوبة",
     "submit" : "تاكيد", 
-    "login" : "تسجيل الدخول"
+    "login" : "تسجيل الدخول",
+    "errors" :{
+      "password_didnt_match" : "هذا الباسورد لا يتوافق مع هذا الحساب"
+    }
   },
   "inputs":{
     "search":"بحث",
-    "email":"البريد الالكنرزمي",
-    "password":"كلمو السر"
+    "code":"الكود",
+    "password":"كلمة السر"
   },
   "columns": {
     "code": "الكود",

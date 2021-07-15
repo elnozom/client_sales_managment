@@ -5,10 +5,15 @@ export const switchLanguage = (locale, ctx) => {
   ctx.$i18n.setLocale(locale)
 }
 
+export const  checkLoggedIn = ctx => {
+  console.log(ctx.$store.state.auth.loggedIn);
+  ctx.$store.state.auth.loggedIn ? '' : ctx.$router.push('login')
+}
+
 export const initApp = ctx => new Promise((resolve) => {
   // handle default  language
-  const locale = localStorage.getItem('locale')
-  if (locale) switchLanguage(locale, ctx)
+  const locale = localStorage.getItem('locale') || 'ar'
+  switchLanguage(locale, ctx)
 
   // handle default  theme
   const mode = localStorage.getItem('mode')
@@ -17,6 +22,8 @@ export const initApp = ctx => new Promise((resolve) => {
     ctx.$vuetify.theme.dark = mode !== 'light'
   }
 
+  // check logged in 
+  checkLoggedIn(ctx)
   setTimeout(() => {
     ctx.$store.commit('ui/appLoaded')
   }, 2000);

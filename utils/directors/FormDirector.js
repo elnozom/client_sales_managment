@@ -1,4 +1,4 @@
-import { email, password } from '@/utils/helpers/Inputs.js'
+import { code, password } from '@/utils/helpers/Inputs.js'
 import { login } from '@/utils/helpers/FormActions.js'
 
 
@@ -9,7 +9,7 @@ export default class DatatableDirector {
     }
     makeLogin() {
         const inputs = [
-            email,
+            code,
             password,
         ]
         return this.builder

@@ -7,6 +7,7 @@ export const  number = v => {
     if(v && isNaN(v)){
         return 'this field must be a valid number'
     }
+    return
 }
 export const  positive = v => (v && !isNaN(v) && v > 0) || 'this field must be a positive Number'
 export const  percent = v => {

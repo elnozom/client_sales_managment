@@ -9,9 +9,4 @@ export default [
         title: "sidebar.orders",
         to: `/orders`
     },
-    {
-        icon: 'mdi-lock-open-outline',
-        title: "sidebar.login",
-        to: `/login`
-    }
 ]

@@ -21,7 +21,7 @@
             v-if="opts.error"
             class="danger w-full mt-4"
           >
-            <span>{{ opts.error }}</span>
+            <span>{{ $t(`form.errors.${opts.error}`) }}</span>
           </div>
           <v-col
             v-for="(input, index) in opts.inputs"
@@ -41,11 +41,17 @@
                 :type="input.inputType"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :hint="input.hint"
-                :label="`inputs.${input.label}`"
+                :label="$t(`inputs.${input.label}`)"
                 @keyup.enter="enter(input)"
               ></v-text-field>
               <slot
                 name="textInput"
+                v-if="input.inputType == 'text'"
+                :input="input"
+              />
+              <slot
+                name="numberInput"
+                v-if="input.inputType == 'number'"
                 :input="input"
               />
             </div>
@@ -63,7 +69,7 @@
                 :loading="input.loading"
                 :item-text="input.inputText"
                 :item-value="input.inputValue"
-                :label="`inputs.${input.label}`"
+                :label="$t(`inputs.${input.label}`)"
               ></v-select>
             </div>
             <div
@@ -72,7 +78,7 @@
             >
               <v-textarea
                 v-model="form[input.prop]"
-                :label="`inputs.${input.label}`"
+                :label="$t(`inputs.${input.label}`)"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :error="opts.errors.hasOwnProperty(input.prop)"
                 :error-messages="opts.errors[input.prop]"
@@ -95,7 +101,7 @@
                 :item-text="input.inputText"
                 :item-value="input.inputValue"
                 :return-object="false"
-                :label="`inputs.${input.label}`"
+                :label="$t(`inputs.${input.label}`)"
               ></v-combobox>
               <!-- <v-icon @click.prevent="createAuthor" >mdi-plus</v-icon> -->
             </div>
@@ -105,7 +111,7 @@
             >
               <v-switch
                 v-model="form[input.prop]"
-                :label="`inputs.${input.label}`"
+                :label="$t(`inputs.${input.label}`)"
               ></v-switch>
             </div>
             <div

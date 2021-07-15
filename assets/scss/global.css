@@ -149,6 +149,12 @@
   }
 }
 
+.danger {
+  background-color: #f13c3c;
+  padding: 10px;
+  color: #fff;
+}
+
 .v-list-item--active {
   background: var(--main-gredient) !important;
   color: #fff !important;

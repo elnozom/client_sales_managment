@@ -23,7 +23,10 @@
   "form": {
     "hide_none_required": "hide none required fields",
     "submit" : "submit", 
-    "login" : "login"
+    "login" : "login",
+    "errors" :{
+      "password_didnt_match" : "password didn't match"
+    }
   },
   "inputs":{
     "search":"search",
