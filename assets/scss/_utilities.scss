@@ -1,20 +1,31 @@
 // widths & heights
 
-.w-full{
+.w-full {
     width: 100%;
 }
-.h-full{
+
+.h-full {
     height: 100%;
 }
-.w-screen{
+
+.w-screen {
     width: 100vw;
 }
-.h-screen{
+
+.xs-50 {
+    @media (min-width : 600px) {
+        width: 50%;
+    }
+}
+
+.h-screen {
     height: 100vh;
 }
-.w-large{
+
+.w-large {
     width: 300px;
 }
+
 .w-medium {
     width: 150px;
 }
@@ -23,100 +34,116 @@
     width: 50px;
 }
 
-.h-app-bar{
+.h-app-bar {
     height: var(--app-bar-h) !important;
 }
 
-.m-l-sidebar{
+.m-l-sidebar {
     margin-left: var(--sidebar-with) !important;
 }
-.m-l-sidebar-variant{
+
+.m-l-sidebar-variant {
     margin-left: var(--sidebar-variant-with) !important;
 }
 
-.pt-0{
+.pt-0 {
     padding-top: 0 !important;
 }
 
 
 
 // flex box
-.flex-center{
+.flex-center {
     @include flex-center
 }
-.flex-center-x{
+
+.flex-center-x {
     @include flex-center-x
 }
-.flex-center-y{
+
+.flex-center-y {
     @include flex-center-y
 }
-.justify-between{
+
+.justify-between {
     justify-content: space-between !important;
 }
 
 
 // backgrounds & colors
-.black-lighten{
+.black-lighten {
     background-color: #030303;
 }
 
 // displays
-.relative{
+.block{
+    display: block !important;
+}
+.relative {
     position: relative;
 }
-.absolute{
+
+.absolute {
     position: absolute;
 }
 
-.absolute-t-r{
+.absolute-t-r {
     position: absolute;
-    top: 0;
-    right: 0;
+    top     : 0;
+    right   : 0;
 }
-.fixed{
+
+.fixed {
     position: fixed;
 }
 
-.fixed-t-r{
+.fixed-t-r {
     position: fixed;
-    top: 0;
-    right: 0;
+    top     : 0;
+    right   : 0;
 }
-.z-high{
+
+.z-high {
     z-index: 100;
 }
-.z-higher{
+
+.z-higher {
     z-index: 200;
 }
-.z-highest{
+
+.z-highest {
     z-index: 1000;
 }
 
 
-.bg-gredient{
+.bg-gredient {
     background: var(--bg-gredient) !important;
 }
 
+.pointer {
+    cursor: pointer;
+}
 
 
-.breadcrumbs{
-    position: absolute;
-    top:var(--app-bar-h);
-    z-index: 0;
-    left: 0;
-    width: 100%;
-    height: 185px;
+.breadcrumbs {
+    position  : absolute;
+    top       : var(--app-bar-h);
+    z-index   : 0;
+    left      : 0;
+    width     : 100%;
+    height    : 185px;
     background: var(--main-gredient) !important;
+
     @media (max-width:960) {
-        top:var(--md-app-bar-h) !important;
+        top: var(--md-app-bar-h) !important;
 
     }
 }
 
 
 //colors
-.danger{
+.danger {
     background-color: rgb(241, 60, 60);
-    padding: 10px;
-    color: #fff;
+    padding         : 10px;
+    color           : #fff;
 }

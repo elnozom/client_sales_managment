@@ -1,11 +1,26 @@
-import { code, password } from '@/utils/helpers/Inputs.js'
-import { login } from '@/utils/helpers/FormActions.js'
+import { code, password , customer , qnt , item , price } from '@/utils/helpers/Inputs.js'
+import { login , chooseCustomer , innsertDocItem} from '@/utils/helpers/FormActions.js'
 
 
 export default class DatatableDirector {
 
     constructor(builder) {
         this.builder = builder
+    }
+    makeCustomer() {
+        const inputs = [
+            customer,
+        ]
+        return this.builder
+            .setTitle('customer')
+            .setInputs(inputs)
+            .setCols(6)
+            .setError('')
+            .setErrors([])
+            .setLoading(false)
+            .setHiddenable(true)
+            .setAction(chooseCustomer)
+            .build()
     }
     makeLogin() {
         const inputs = [
@@ -18,9 +33,27 @@ export default class DatatableDirector {
             .setCols(6)
             .setError('')
             .setErrors([])
-            .setLoadnng(false)
+            .setLoading(false)
             .setHiddenable(true)
             .setAction(login)
+            .build()
+    }
+    makeInsertItem() {
+        const inputs = [
+            item,
+            qnt,
+            price,
+        ]
+        return this.builder
+            .setTitle('insert_item')
+            .setInputs(inputs)
+            .setCols(6)
+            .setBtnCols(3)
+            .setError('')
+            .setErrors([])
+            .setLoading(false)
+            .setHiddenable(true)
+            .setAction(innsertDocItem)
             .build()
     }
 };

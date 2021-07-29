@@ -1,5 +1,16 @@
 {
   "message": "hellp",
+  "create_order": "create order",
+  "choose_customer":"choose customer",
+  "customer":"customer",
+  "total" : "total",
+  "save":"save",
+  "total_packages" : "total packages",
+  "employee":"employee",
+  "order_number":"order number",
+  "date":"date",
+  "cancel":"cancel",
+  "ok":"ok",
   "login": {
     "username": "username",
     "password": "password"
@@ -7,6 +18,7 @@
   "table": {
     "products": "products",
     "no_data": "no data",
+    "customer":"customer",
     "new_item":"add new itetm",
     "remember_my_choices":"remember my choices",
     "limited" : "limited",
@@ -14,6 +26,15 @@
     "stop_sale":"stop sale",
     "not_stop_sale":"continue sale",
     "orders": "orders"
+  },
+  "validations":{
+    "required" :"this field is required",
+    "min6" :"this filed must be bigger than 6 chartacters",
+    "email" :"this field must be an email",
+    "max255" :"his filed must be smaller than 6 chartacters",
+    "number" :"this field must be number",
+    "positive_number" :"this field must be positive number",
+    "percent" :"this field must be percent"
   },
   "sidebar": {
     "products": "products",
@@ -30,6 +51,8 @@
   },
   "inputs":{
     "search":"search",
+    "item":"item",
+    "qnt":"quantity",
     "email":"email",
     "password":"password"
   },
@@ -37,6 +60,7 @@
     "code": "code",
     "employee": "employee",
     "totla": "total",
+    "total": "total",
     "created_at": "created at",
     "name": "name",
     "price": "price",

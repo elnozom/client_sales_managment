@@ -51,8 +51,17 @@
       />
       <!-- <v-toolbar-title v-text="'El Nozom'" /> -->
       <v-spacer />
+        <v-icon class="pointer ml-3" @click.prevent="$store.commit('ui/customerModal' , true)" left>
+          mdi-plus
+        </v-icon>
+      <!-- <v-btn
+        tile
+        color="primary"
+      >
+        {{$t('create_order')}}
+      </v-btn> -->
       <v-icon
-        class="pointer mr-4"
+        class="pointer "
         color="white"
         @click.prevent="switchLanguage"
       >mdi-earth</v-icon>
@@ -66,7 +75,7 @@
         color="white"
         @click.prevent="logout"
       >mdi-logout-variant</v-icon>
-      
+
     </v-app-bar>
     <!-- <div class="breadcrumbs"></div> -->
   </div>
@@ -74,31 +83,31 @@
 
 <script>
 import items from '@/utils/Sidebar.js'
-import {switchLanguage} from '@/utils/helpers/Global.js'
+import { switchLanguage } from '@/utils/helpers/Global.js'
 export default {
   data() {
     return {
       drawer: true,
-      variant:false,
+      variant: false,
       items
     }
   },
-  methods:{
-    switchTheme(){
-      this.$vuetify.theme.dark ? localStorage.setItem('mode' , 'light') : localStorage.setItem('mode' , 'dark')
+  methods: {
+    switchTheme() {
+      this.$vuetify.theme.dark
+        ? localStorage.setItem('mode', 'light')
+        : localStorage.setItem('mode', 'dark')
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark
     },
-    switchLanguage(){
+    switchLanguage() {
       const locale = this.$vuetify.rtl ? 'en' : 'ar'
-      switchLanguage(locale , this)
+      switchLanguage(locale, this)
     },
-    logout(){
-      this.$store.dispatch('auth/logout')
-      .then(() => {
+    logout() {
+      this.$store.dispatch('auth/logout').then(() => {
         this.$router.push('/login')
       })
     }
-    
   }
 }
 </script>

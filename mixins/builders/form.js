@@ -19,12 +19,19 @@ export default {
     },
     methods: {
         async submit() {
-           await this.opts.action(this)
+            await this.opts.action(this)
 
         },
-        enter(input) {
-            input.enter(this)
+        blur(input) {
+            typeof input.blur != 'undefined' ? input.blur(this, input) : ''
+        },
+        changed(input) {
+            typeof input.changed != 'undefined' ? input.changed(this, input) : ''
+        },
 
+
+        enter(input) {
+            typeof input.enter != 'undefined' ? input.enter(this, input) : ''
         }
     },
     created() {

@@ -21,6 +21,12 @@
   width: 100vw;
 }
 
+@media (min-width: 600px) {
+  .xs-50 {
+    width: 50%;
+  }
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -93,6 +99,10 @@
   background-color: #030303;
 }
 
+.block {
+  display: block !important;
+}
+
 .relative {
   position: relative;
 }
@@ -133,6 +143,10 @@
   background: var(--bg-gredient) !important;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .breadcrumbs {
   position: absolute;
   top: var(--app-bar-h);
@@ -162,6 +176,10 @@
           box-shadow: var(--color-boxshadow) !important;
   border-radius: 0 5px 5px 0 !important;
   margin-right: 10px !important;
+}
+
+.v-list-item--active .primary--text {
+  color: #fff !important;
 }
 
 .logo img {

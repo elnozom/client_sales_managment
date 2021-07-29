@@ -3,9 +3,10 @@
   <v-row>
     <!-- <layouts-page-header :title="'pages.products'"/> -->
     <v-col class="text-center">
-      <builders-data-table-builder :opts="opts">
+      <builders-data-table-builder @update="update" :opts="opts">
         <!-- <template v-slot:default="slotProps">{{slotProps.item}}</template> -->
       </builders-data-table-builder>
+      
     </v-col>
   </v-row>
 </template>
@@ -24,6 +25,11 @@ export default {
 
     return {
       opts
+    }
+  },
+  methods:{
+    update(payload){
+      this.$store.dispatch('item/update' , payload)
     }
   },
   created(){

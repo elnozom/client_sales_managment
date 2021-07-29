@@ -13,7 +13,12 @@ export default class FormBuilder {
         return this
     }
 
-    setLoadnng(loading) {
+    setBtnCols(cols) {
+        this.form.btnCols = cols
+        return this
+    }
+
+    setLoading(loading) {
         this.form.loading = loading
         return this
     }

@@ -1,7 +1,7 @@
 import Http from "@/utils/Http.js"
 
 export const state = () => ({
-    employee: false,
+    employee: {},
     loggedIn: false,
     err: ""
 
@@ -28,8 +28,9 @@ export const mutations = {
 
 export const actions = {
     getEmp({ commit }, payload) {
+        console.log(payload)
         return new Promise((resolve, reject) => {
-            Http.get('employee', payload)
+            Http.get(`employee?EmpCode=${payload.code}`, payload)
                 .then(res => {
                     resolve(res.data)
                     commit('employee', res.data)

@@ -5,17 +5,43 @@ export default {
     data() {
         // extract document id from query parameter
         return {
+            snack: false,
+            snackColor: '',
+            snackText: '',
+            PMin:'',
+            PMax:'',
             datatable: {},
             form: {
-                StoreCode:1
+                StoreCode: 1
             },
-            apiUrl:process.env,
+            apiUrl: process.env,
             search: "",
             loading: false,
             options: {}
         }
     },
     methods: {
+        save(item , type) {
+            this.snack = true
+            this.snackColor = 'success'
+            this.snackText = this.$t('table.saved')
+            // MinValue , MaxValue
+            const payload = type == 'PMax' ?  {Serial : item.Serial ,MaxValue : parseFloat(this.PMax) } : {Serial : item.Serial ,MinValue :parseFloat( this.PMin) }
+            this.update(payload);
+        },
+        cancel() {
+            this.snack = true
+            this.snackColor = 'error'
+            this.snackText = this.$t('table.cancled')
+        },
+        open() {
+            this.snack = true
+            this.snackColor = 'info'
+            this.snackText = this.$t('table.opened')
+        },
+        close() {
+            console.log('Dialog closed')
+        },
         getData() {
             this.loading = true
             http.get(`${this.opts.url}?${serializeQuery(clearNullValues(this.form))}`)
@@ -73,16 +99,18 @@ export default {
         },
         viewItem(item) {
             this.opts.view(this, item)
+        },
+        async update(payload) {
+            this.opts.loading = true
+            await this.$emit('update', payload)
+            this.getData()
+            this.opts.loading = false
+
         }
 
     },
     created() {
-        // set opt.doctype to the document type from do param
-        if (this.$route.params.type) {
-            this.opts.docType = this.$route.params.type
-        }
-        this.$bus.$on('productCreated', () => {
-            console.log('asdasdasdasd')
+        this.$bus.$on('productUpdated', () => {
             this.getData()
         })
         // get the page query
@@ -100,7 +128,8 @@ export default {
             }
         } else {
             // this code will be executed if we visite the page with query already set
-            this.form = query
+            // i commented the next line to avoid error on edit order page
+            // this.form = query
         }
         this.initFilters()
         this.form.search = ''

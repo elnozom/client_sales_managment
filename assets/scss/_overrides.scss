@@ -13,3 +13,9 @@
 .v-data-footer__select{
     display: none !important;
 }
+
+
+//set limit to length of item compobox suggestions list
+.item-combobox .v-list-item__content{
+    max-width: 400px;
+}

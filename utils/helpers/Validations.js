@@ -1,17 +1,17 @@
 
-export const  required = v => !!v || 'this field is required'
-export const  min6 = v => !!v || 'this field is required'
-export const  email = v => /.+@.+/.test(v) || 'this field must be a valid email'
-export const  man255 = v => v.length > 255 || 'this field must be less than 255 character'
+export const  required = v => !!v || 'required'
+export const  min6 = v => !!v || 'min6'
+export const  email = v => /.+@.+/.test(v) || 'email'
+export const  man255 = v => v.length > 255 || 'min255'
 export const  number = v => {
     if(v && isNaN(v)){
-        return 'this field must be a valid number'
+        return 'number'
     }
     return
 }
-export const  positive = v => (v && !isNaN(v) && v > 0) || 'this field must be a positive Number'
+export const  positive = v => (v && !isNaN(v) && v > 0) || 'positive_number'
 export const  percent = v => {
     if(v && (v < 0 || v > 100)){
-        return 'this field must be a valid percent'
+        return 'percent'
     }
 }

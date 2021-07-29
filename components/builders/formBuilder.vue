@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-4">
-    <v-card-title class="primary mb-4 d-flex justify-between">
+    <!-- <v-card-title class="primary mb-4 d-flex justify-between">
       <h2>{{ $t(`form.${opts.title}`) }}</h2>
       <v-spacer />
       <v-switch
@@ -9,7 +9,7 @@
         color="white"
         :label="$t('form.hide_none_required')"
       ></v-switch>
-    </v-card-title>
+    </v-card-title> -->
     <v-card-text>
       <v-form
         ref="form"
@@ -37,12 +37,14 @@
                 :ref="input.ref"
                 v-model="form[input.prop]"
                 :error="opts.errors.hasOwnProperty(input.prop)"
-                :error-messages="opts.errors[input.prop]"
+                :error-messages="opts.errors[input.prop] ? $t(`validations.${opts.errors[input.prop]}`) : ''"
                 :type="input.inputType"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :hint="input.hint"
                 :label="$t(`inputs.${input.label}`)"
                 @keyup.enter="enter(input)"
+                @blur="blur(input)"
+                @input="changed(input)"
               ></v-text-field>
               <slot
                 name="textInput"
@@ -61,10 +63,11 @@
             >
               <v-select
                 v-model="form[input.prop]"
+                :ref="input.ref"
                 :items="input.items"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :error="opts.errors.hasOwnProperty(input.prop)"
-                :error-messages="opts.errors[input.prop]"
+                :error-messages="opts.errors[input.prop] ? $t(`validations.${opts.errors[input.prop]}`) : ''"
                 :clearable="input.clearable"
                 :loading="input.loading"
                 :item-text="input.inputText"
@@ -78,10 +81,11 @@
             >
               <v-textarea
                 v-model="form[input.prop]"
+                :ref="input.ref"
                 :label="$t(`inputs.${input.label}`)"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :error="opts.errors.hasOwnProperty(input.prop)"
-                :error-messages="opts.errors[input.prop]"
+                :error-messages="opts.errors[input.prop] ? $t(`validations.${opts.errors[input.prop]}`) : ''"
                 auto-grow
                 :rows="input.rows"
               ></v-textarea>
@@ -89,17 +93,21 @@
             <div
               v-if="input.type == 'combobox'"
               class="combobox"
+              :class="input.class ? input.class : ''"
             >
               <v-combobox
                 v-model="form[input.prop]"
+                :ref="input.ref"
                 :items="input.items"
                 :rules="typeof input.rules == 'undefined' ? [] : input.rules"
                 :error="opts.errors.hasOwnProperty(input.prop)"
                 :loading="input.loading"
-                :error-messages="opts.errors[input.prop]"
+                :error-messages="opts.errors[input.prop] ? $t(`validations.${opts.errors[input.prop]}`) :''"
                 :clearable="input.clearable"
                 :item-text="input.inputText"
                 :item-value="input.inputValue"
+                @keyup.enter="enter(input)"
+                @change="changed(input)"
                 :return-object="false"
                 :label="$t(`inputs.${input.label}`)"
               ></v-combobox>
@@ -128,11 +136,30 @@
               ></v-treeview>
               <!-- <v-btn @click.prevent="saveCategories">save my choices</v-btn> -->
             </div>
+            <div v-if="input.type === 'autcomplete'">
+              <v-autocomplete
+                :search-input.sync="form[input.prop]"
+                :items="input.items"
+                :loading="input.loading"
+                color="white"
+                hide-no-data
+                hide-selected
+                :filter="input.filter"
+                :item-text="input.inputText"
+                :autofocus="input.autofocus"
+                :item-value="input.inputValue"
+                :label="$t(`inputs.${input.label}`)"
+                @keyup.enter="enter(input)"
+                @blur="blur(input)"
+                @keydown="changed(input)"
+                return-object
+              ></v-autocomplete>
+            </div>
           </v-col>
-          <v-col cols="12">
+          <v-col :cols="opts.btnCols ? opts.btnCols : 12">
             <v-btn
               color="success"
-              class="w-full block mt-8"
+              class="w-full block mt-5"
               :disabled="!opts.valid && opts.errors.length == 0"
               :loading="opts.loading"
               @click.prevent="submit"

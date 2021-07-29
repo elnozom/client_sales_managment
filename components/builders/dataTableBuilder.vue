@@ -1,5 +1,5 @@
 <template>
-  <v-card class=''>
+  <v-card class='mt-6'>
     <v-data-table
       :headers="opts.headers"
       :items="datatable.items"
@@ -7,27 +7,12 @@
       :items-per-page="100"
       :search="search"
       fixed-header
-      height="600px"
+      height="400px"
       sort-by="Name"
       class="elevation-1"
-     
     >
       <template v-slot:top>
-        <div class="">
-
-          <v-toolbar flat>
-            <v-toolbar-title>{{$t(`table.${opts.title}`)}}</v-toolbar-title>
-            <v-divider
-              class="mx-4"
-              inset
-              vertical
-            ></v-divider>
-            <v-spacer></v-spacer>
-            <slot name="actions"></slot>
-            <!-- <modals-products-create/> -->
-          </v-toolbar>
-        </div>
-        <div class="spacing-playground pa-6 mb-6">
+        <div class="spacing-playground px-6">
           <v-row>
             <v-col
               cols="3"
@@ -113,6 +98,7 @@
       </template>
       <template v-slot:[`item.LimitedQnt`]="{ item }">
         <v-chip
+          @dblclick="update({Serial : item.Serial, LQvalue: false})"
           class="ma-2"
           color="red"
           label
@@ -126,6 +112,7 @@
         </v-chip>
         <v-chip
           class="ma-2"
+          @dblclick="update({Serial : item.Serial, LQvalue: true})"
           color="green"
           label
           text-color="white"
@@ -139,7 +126,8 @@
       </template>
       <template v-slot:[`item.StopSale`]="{ item }">
         <v-chip
-          class="ma-2"
+          @dblclick="update({Serial : item.Serial, STValue: false})"
+          class="ma-2 pointer"
           color="red"
           label
           text-color="white"
@@ -151,7 +139,8 @@
           {{$t('table.stop_sale')}}
         </v-chip>
         <v-chip
-          class="ma-2"
+          @dblclick="update({Serial : item.Serial, STValue: true})"
+          class="ma-2 pointer"
           color="green"
           label
           text-color="white"
@@ -163,7 +152,40 @@
           {{$t('table.not_stop_sale')}}
         </v-chip>
       </template>
-
+      <template v-slot:[`item.PMax`]="{ item }">
+        <v-edit-dialog
+          @save="save(item , 'PMax')"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ item.PMax }}
+          <template v-slot:input>
+            <v-text-field
+              v-model="PMax"
+              :label="$t('inputs.edit')"
+              single-line
+            ></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:[`item.PMin`]="{ item }">
+        <v-edit-dialog
+          @save="save(item , 'PMin')"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ item.PMin }}
+          <template v-slot:input>
+            <v-text-field
+              v-model="PMin"
+              :label="$t('inputs.edit')"
+              single-line
+            ></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
 
         <v-btn
