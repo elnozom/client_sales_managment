@@ -1,4 +1,5 @@
 import http from '@/utils/Http.js'
+import { mapGetters } from 'vuex'
 import { clearNullValues, addParamsToLocation, serializeQuery } from '@/utils/helpers/Global.js'
 export default {
     props: ['opts'],
@@ -8,8 +9,8 @@ export default {
             snack: false,
             snackColor: '',
             snackText: '',
-            PMin:'',
-            PMax:'',
+            PMin: '',
+            PMax: '',
             datatable: {},
             form: {
                 StoreCode: 1
@@ -20,13 +21,18 @@ export default {
             options: {}
         }
     },
+    computed: {
+        ...mapGetters({
+            items: 'datatable/items'
+        })
+    },
     methods: {
-        save(item , type) {
+        save(item, type) {
             this.snack = true
             this.snackColor = 'success'
             this.snackText = this.$t('table.saved')
             // MinValue , MaxValue
-            const payload = type == 'PMax' ?  {Serial : item.Serial ,MaxValue : parseFloat(this.PMax) } : {Serial : item.Serial ,MinValue :parseFloat( this.PMin) }
+            const payload = type == 'PMax' ? { Serial: item.Serial, MaxValue: parseFloat(this.PMax) } : { Serial: item.Serial, MinValue: parseFloat(this.PMin) }
             this.update(payload);
         },
         cancel() {
@@ -44,10 +50,20 @@ export default {
         },
         getData() {
             this.loading = true
-            http.get(`${this.opts.url}?${serializeQuery(clearNullValues(this.form))}`)
+            let url = `${this.opts.url}?${serializeQuery(clearNullValues(this.form))}`
+            if( typeof this.opts.noQuery !== 'undefined' && this.opts.noQuery){
+                url = this.opts.url 
+            }
+            if( typeof this.opts.query !== 'undefined'){
+                const q = this.opts.query 
+                url = `${this.opts.url}?${q}=${this.$route.query[q]}}`
+            }
+            http.get(url)
                 .then(res => {
+                    res.data = res.data === null ? [] : res.data
                     this.datatable.items = res.data
                     this.loading = false
+                    this.$emit('fetched', res.data)
                     //  console.log(res.data[0].keys)
                 })
         },

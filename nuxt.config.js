@@ -57,7 +57,7 @@ export default {
         locales: [
           {
             code: 'en',
-            name: 'لانجليزية'
+            name: 'الانجليزية'
           },
           {
             code: 'ar',

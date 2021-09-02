@@ -48,16 +48,21 @@ export const innsertDocItem = async (ctx, input) => {
     }
 
     // validate there is no items inserted
-    console.log(ctx.$route.query)
+    // create order 
     if (ctx.$store.getters['order/serial'] == null && typeof ctx.$route.query.order == 'undefined') {
         ctx.$store.dispatch('order/create', orderForm)
             .then(res => {
-                const newQuery = Object.assign({}, ctx.$route.query, { order: res })
+                const newQuery = Object.assign({}, ctx.$route.query, { serial: res })
+                // set order number on the url
                 addParamsToLocation(newQuery, ctx.$route.path)
+                // set order number on the store
                 ctx.$store.commit('order/serial', res)
             })
     }
-
+    //get serial neither from url or from store
+    // should be equals
+    // if we just opened the page then we depend on url [means we are editing order]
+    // if we are just created the order the we depend  on store [means we are creating order]
     const serial = ctx.$route.query.order || ctx.$store.getters['order/serial']
 
 
@@ -71,12 +76,23 @@ export const innsertDocItem = async (ctx, input) => {
 
     ctx.$store.dispatch('order/insertItem', itemForm)
         .then(res => {
-            const total = parseFloat(ctx.form.item.Price) * parseFloat(ctx.form.qnt)
+            const total = parseFloat(ctx.form.price) * parseFloat(ctx.form.qnt)
             const totalP =  parseFloat(ctx.form.qnt)
+
+            const item = {
+                "Serial": 42,
+                "BarCode": ctx.form.item.Code,
+                "ItemName": ctx.form.item.Name,
+                "Qnt": parseFloat(ctx.form.qnt),
+                "Price": parseFloat(ctx.form.price),
+                "Total": total
+              }
             ctx.$store.commit('order/appendTotal' , total)
             ctx.$store.commit('order/appendPackages' ,totalP)
+            ctx.$store.commit('datatable/appendRow' ,item)
+            
 
-            console.log(ctx.form.item.Price,total,totalP)
+            console.log('form' , item)
         })
 
     ctx.opts.loading = false

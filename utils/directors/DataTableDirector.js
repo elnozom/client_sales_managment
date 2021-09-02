@@ -1,4 +1,4 @@
-import { viewProduct, editProduct } from "@/utils/helpers/DataTableActions.js"
+import { viewProduct, editProduct , editOrder } from "@/utils/helpers/DataTableActions.js"
 export default class DatatableDirector {
     constructor(builder , ctx) {
         this.builder = builder
@@ -50,41 +50,42 @@ export default class DatatableDirector {
     makeOrderProducts() {
         let headers = [
             // { text: this.t.$t(this.ctx.$t('columns.codeasdasd')), value: 'code', align: "center" },
-            { text: this.ctx.$t('columns.code'), value: 'Code', align: "center" },
-            { text: this.ctx.$t('columns.name'), value: 'Name', align: "center" },
+            { text: this.ctx.$t('columns.code'), value: 'BarCode', align: "center" },
+            { text: this.ctx.$t('columns.name'), value: 'ItemName', align: "center" },
             { text: this.ctx.$t('columns.price'), value: 'Price', align: "center" },
-            { text: this.ctx.$t('columns.qnt'), value: 'AnQnt', align: "center" },
-            { text: this.ctx.$t('columns.total'), value: 'total', align: "center" },
+            { text: this.ctx.$t('columns.qnt'), value: 'Qnt', align: "center" },
+            { text: this.ctx.$t('columns.total'), value: 'Total', align: "center" },
         ]
-        
         return this.builder
             .setTitle('products')
-            .setUrl('items')
+            .setUrl('orders/items')
             .setEdit(editProduct)
-            .setViewable(true)
-            .setView(viewProduct)
             .setTable('products')
+            .setQuery('serial')
             .setHeaders(headers)
             .build()
     }
 
     makeOrders() {
-
-        const headers = [
-            { text: this.ctx.$t('columns.code'), value: 'code', align: "center" },
-            { text: this.ctx.$t('columns.employee'), value: 'employee', align: "center" },
-            { text: this.ctx.$t('columns.total'), value: 'total', align: "center" },
-            { text: this.ctx.$t('columns.created_at'), value: 'created_at', align: "center" }
+        let headers = [
+            { text: this.ctx.$t('columns.docNo'), value: 'DocNo', align: "center" },
+            { text: this.ctx.$t('columns.empName'), value: 'EmpName', align: "center" },
+            { text: this.ctx.$t('columns.empCode'), value: 'EmpCode', align: "center" },
+            { text: this.ctx.$t('columns.totalCash'), value: 'TotalCash', align: "center" },
+            { text: this.ctx.$t('columns.docDate'), value: 'DocDate', align: "center" },
+            { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
         ]
+        
         return this.builder
             .setTitle('orders')
             .setUrl('orders')
-            .setEdit(editProduct)
-            .setViewable(true)
-            .setView(viewProduct)
-            .setTable('orders')
+            .setEdit(editOrder)
+            .setEditable(true)
+            .setQuery('serial')
             .setHeaders(headers)
             .build()
     }
+
+    
 
 };

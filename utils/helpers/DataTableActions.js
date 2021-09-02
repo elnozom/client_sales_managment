@@ -8,3 +8,10 @@ export const viewProduct = (ctx, item) => {
     console.log('view')
 
 }
+
+export const editOrder = (ctx, item) => {
+    // ctx.$router.push({ name: 'products-id-view', params: { id: item.id } })
+    console.log('edit')
+
+}
+

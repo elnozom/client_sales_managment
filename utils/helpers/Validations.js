@@ -15,3 +15,13 @@ export const  percent = v => {
         return 'percent'
     }
 }
+export const  min = (v , min) => {
+    if(v && v < min){
+        return 'min'
+    }
+}
+export const  max = (v , max) => {
+    if(v && v > max){
+        return 'min'
+    }
+}

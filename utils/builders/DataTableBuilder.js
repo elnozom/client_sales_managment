@@ -14,6 +14,14 @@ export default class DataTableBuilder {
         this.datatable.headers = headers
         return this
     }
+    setNoQuery(noQuery) {
+        this.datatable.noQuery = noQuery
+        return this
+    }
+    setQuery(query) {
+        this.datatable.query = query
+        return this
+    }
     setRememberAble(rememberAble) {
         this.datatable.rememberAble = rememberAble
         return this
