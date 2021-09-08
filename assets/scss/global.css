@@ -192,10 +192,6 @@
           box-shadow: none !important;
 }
 
-.v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
-  max-width: 200px !important;
-}
-
 .v-data-footer {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
@@ -204,6 +200,10 @@
 
 .v-data-footer__select {
   display: none !important;
+}
+
+.item-combobox .v-list-item__content {
+  max-width: 400px;
 }
 
 @font-face {

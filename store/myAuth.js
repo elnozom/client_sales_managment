@@ -27,13 +27,21 @@ export const mutations = {
 }
 
 export const actions = {
-    getEmp({ commit }, payload) {
+    getEmp({ commit , dispatch }, payload) {
         console.log(payload)
         return new Promise((resolve, reject) => {
-            Http.get(`employee?EmpCode=${payload.code}`, payload)
+            
+            Http.get(`employee?EmpCode=${payload.code}`)
                 .then(res => {
-                    resolve(res.data)
-                    commit('employee', res.data)
+                    const data = res.data
+                    commit('employee', data)
+                    console.log(payload)
+                    if (data.EmpPassword === payload.password) {
+                        commit('loggedIn', true)
+                        localStorage.setItem('EmpCode', data.EmpCode)
+                    }
+                    resolve(data)
+
                 })
                 .catch(err => {
                     reject(err.response.data)
@@ -42,14 +50,14 @@ export const actions = {
 
     },
 
-    login({ commit, state }, payload) {
+    login({ commit, state , dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            console.log(state.employee.EmpPassword === payload)
-            console.log(payload)
-            if (state.employee.EmpPassword === payload) {
+            if (state.employee.EmpPassword === payload.password) {
                 commit('loggedIn', true)
                 localStorage.setItem('EmpCode', state.employee.EmpCode)
                 resolve(true)
+            }  else if(state.employee != {}) {
+                dispatch('getEmp' , payload).then(()=> resolve(true))
             } else {
                 const err = 'password_didnt_match'
                 commit('err', err)

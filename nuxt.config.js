@@ -114,6 +114,33 @@ export default {
     }
   },
 
+  
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'access_token',
+          required: true,
+          type: 'Bearer'
+        },
+        redirect: {
+            login: '/login',
+            logout: '/',
+            callback: '/login',
+            home: '/'
+        },
+
+        
+        endpoints: {   
+          login: { url: `login`, method: `post` },
+          logout: { url: `user/logout`, method: `post` },
+          user: { url: `user`, method: `get` }
+        }
+      }
+    }
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

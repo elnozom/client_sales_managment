@@ -12,16 +12,32 @@ export const login = async (ctx, input) => {
     ctx.opts.loading = true
     await ctx.$refs.form.validate()
     if (ctx.opts.valid) {
-        ctx.$store.dispatch('auth/login', ctx.form.password)
-            .then(() => {
-                clearErr(ctx)
-                ctx.opts.loading = false
-                ctx.$router.push('/')
-            })
-            .catch(err => {
-                console.log(err)
-                setErr(err, ctx)
-            })
+    //    console.log(ctx)
+        ctx.$auth
+        .loginWith('local', { data: ctx.form })
+        .then(()=>{
+            const snackbar = {
+                active : true,
+                text: 'logged_in_successfully'
+            }
+            ctx.$store.commit('ui/setSnackbar' , snackbar)
+            ctx.loading  = false
+
+        }).catch(e => {
+          ctx.err = e.response.data
+          ctx.loading  = false
+        })
+        
+        // ctx.$store.dispatch('myAuth/login', {code : ctx.form.code ,password: ctx.form.password})
+        //     .then(() => {
+        //         clearErr(ctx)
+        //         ctx.opts.loading = false
+        //         ctx.$router.push('/')
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //         setErr(err, ctx)
+        //     })
 
     }
 
@@ -139,24 +155,6 @@ export const getProductSerial = async (ctx, input) => {
     })
     ctx.opts.loading = false
 }
-
-export const getEmp = async (ctx, input) => {
-    ctx.opts.loading = true
-    if (ctx.form.code) {
-        ctx.$store.dispatch('auth/getEmp', ctx.form)
-            .then(() => {
-                clearErr(ctx)
-                ctx.opts.loading = false
-                ctx.$refs.password[0].focus()
-            })
-            .catch(err => {
-                setErr(err, ctx)
-            })
-    }
-    ctx.opts.loading = false
-
-}
-
 
 
 
