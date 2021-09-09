@@ -5,7 +5,7 @@ import { getEmp  , login , getProductSerial , itemChanged ,  innsertDocItem } fr
 export const code = {
     type : "text",
     inputType : "number",
-    prop : "code",
+    prop : "empCode",
     ref : "code",
     enter : (ctx, input) =>   ctx.$refs.password[0].focus(),
     // blur : getEmp,
@@ -19,7 +19,7 @@ export const code = {
 export const password = {
     type : "text",
     inputType : "password",
-    prop : "password",
+    prop : "empPassword",
     ref : "password",
     enter : login,
     cols : 12,

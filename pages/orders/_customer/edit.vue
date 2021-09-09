@@ -2,8 +2,8 @@
   <v-card>
     <v-card-title class="flex justify-between">
       <div class="right">
-        <p class="block">{{$t('customer')}} :{{this.$route.query.customer_name}} / {{this.$route.query.customer_code}} </p>
-        <p class="block">{{$t('employee')}} : {{this.$store.state.auth.employee.EmpName}} / {{this.$store.state.auth.employee.EmpCode}}</p>
+        <p class="block">{{$t('customer')}} :{{$route.query.customer_name}} / {{this.$route.query.customer_code}} </p>
+        <p class="block">{{$t('employee')}} : {{$auth.user.EmpCode}} / {{$auth.user.EmpName}}</p>
       </div>
       <div class="middle">
         <p class="block">{{$t('order_number')}} : 1548</p>
@@ -43,7 +43,7 @@
                 v-model="form.item"
                 ref="item"
                 :items="items"
-                :rules="[required]"
+                :rules="rules"
                 :loading="itemsLoaging"
                 clearable
                 item-text="Name"
@@ -63,7 +63,7 @@
               ref="qnt"
               v-model="form.qnt"
               type="number"
-              :rules="[required , number]"
+              :rules="rules"
               :label="$t(`inputs.qnt`)"
               @keyup.enter="goTo('price')"
             ></v-text-field>
@@ -78,7 +78,7 @@
               ref="price"
               v-model="form.price"
               type="number"
-              :rules="[required, number]"
+              :rules="rules"
               :messages="priceHint"
               :label="$t(`inputs.price`)"
               @keyup.enter="submit"
@@ -97,7 +97,7 @@
               {{$t('form.submit')}}
             </v-btn>
           </v-col>
-          <v-col :cols="12">
+          <v-col :cols="12" v-if="$auth.user.SecLevel >= 4">
             <v-btn
               color="success"
               class="w-full block mt-5"
@@ -175,13 +175,11 @@
 </template>
 
 <script>
-import { required, number, min, max } from '@/utils/helpers/Validations.js'
 import { addParamsToLocation } from '@/utils/helpers/Global.js'
 import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      required,
       snack: false,
       search: '',
       priceErr: null,
@@ -190,15 +188,18 @@ export default {
       valid: false,
       error: '',
       errors: [],
+      rules: [
+        v => !!v || 'required',
+      ],
       headers: [
         { text: this.$t('columns.code'), value: 'BarCode', align: 'center' },
         { text: this.$t('columns.name'), value: 'ItemName', align: 'center' },
         { text: this.$t('columns.price'), value: 'Price', align: 'center' },
         { text: this.$t('columns.qnt'), value: 'Qnt', align: 'center' },
+        { text: this.$t('columns.QntAntherUnit'), value: 'QntAntherUnit', align: 'center' },
         { text: this.$t('columns.total'), value: 'Total', align: 'center' },
         { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
       ],
-      number,
       priceHint: '',
       form: {
         item: '',
@@ -236,13 +237,13 @@ export default {
       this.snackText = this.$t('table.saved')
       // MinValue , MaxValue
       const payload = { Qnt: parseFloat(this.newQnt), Serial: item.Serial }
-     
+
       this.update(payload)
     },
     close() {
       const Serial = this.$route.query.order || this.serial
       this.$store.dispatch('order/close', { Serial }).then(() => {
-        this.$router.push({name : "orders-index" })
+        this.$router.push({ name: 'orders' })
       })
     },
     async update(payload) {
@@ -266,14 +267,15 @@ export default {
       })
     },
     insertOrderItem(form) {
+      console.log(form)
       this.$store.dispatch('order/insertItem', form).then((res) => {
         const total = parseFloat(this.form.price) * parseFloat(this.form.qnt)
-
         const item = {
           Serial: res.Serial,
           BarCode: this.form.item.Code,
           ItemName: this.form.item.Name,
-          Qnt: parseFloat(this.form.qnt),
+          Qnt: form.Qnt,
+          QntAntherUnit: form.QntAntherUnit || 0,
           Price: parseFloat(this.form.price),
           Total: total
         }
@@ -314,15 +316,18 @@ export default {
       }
     },
     async submit() {
+      await this.$refs.form.validate()
+      if(!this.valid){
+        return 
+      }
       this.insertLoading = true
       // validate the price is in the correct range
-      if(!this.validatePrice()) return
+      if (!this.validatePrice()) return
       // validate there is no items inserted
       // create order
       if (this.datatable.items.length === 0) {
         const orderForm = {
-          AccountSerial: this.$route.params.customer,
-          EmpCode: this.$store.getters['auth/employee'].EmpCode
+          AccountSerial: parseInt(this.$route.params.customer)
         }
         await this.insertOrder(orderForm)
       }
@@ -330,14 +335,28 @@ export default {
       // should be equals
       // if we just opened the page then we depend on url [means we are editing order]
       // if we are just created the order the we depend  on store [means we are creating order]
-      const serial = this.$route.query.order || this.serial
-      const itemForm = {
+      const serial = parseInt(this.$route.query.serial) || this.serial
+      let itemForm = {
         HeadSerial: serial,
         ItemSerial: this.form.item.Serial,
         Qnt: parseFloat(this.form.qnt),
         Price: parseFloat(this.form.price)
       }
-
+      if (this.form.item.ItemHaveAntherUnit) {
+        itemForm.QntAntherUnit = parseFloat(this.form.qnt)
+        itemForm.Qnt = parseFloat(this.form.qnt) * parseFloat(this.form.item.AvrWeight)
+      }
+      //if this is true that means we need to show error because this item has another unit
+      // but avgweight is null or 0
+      if(itemForm.qnt == 0){
+        const snackbar = {
+                    active : true,
+                    text: 'avg_weight_is_zero'
+                }
+                this.$store.commit('ui/setSnackbar' , snackbar)
+                 this.reset()
+                return
+      }
       this.insertOrderItem(itemForm)
     }
   },

@@ -104,9 +104,10 @@ export default {
       switchLanguage(locale, this)
     },
     logout() {
-      this.$store.dispatch('auth/logout').then(() => {
+      localStorage.removeItem('auth._token.local')
+      localStorage.removeItem('auth._token.local')
         this.$router.push('/login')
-      })
+      
     }
   }
 }

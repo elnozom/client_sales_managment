@@ -55,13 +55,15 @@ export const mutations = {
 export const actions = {
     
     getOrderItems({commit} , payload){
+        console.log('asdasd')
         commit('orderItemsLoading' , true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve , reject) => {
             Http.get(`orders/items?${serializeQuery(payload)}`)
             .then(res => {
+                commit('orderItemsDatatableItems' , res.data)
                 commit('orderItemsLoading' , false)
-                commit('order/setTotals' ,res , {root:true})
+                commit('order/setTotalsFromResponse' ,res.data , {root:true})
                 resolve(res)
             })
             .catch(err => {

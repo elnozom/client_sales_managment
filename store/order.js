@@ -2,8 +2,8 @@ import Http from "@/utils/Http.js"
 export const state = () => ({
     loading: false,
     totals: {
-        total: null,
-        packages: null
+        TotalCash: null,
+        TotalPackages: null
     },
     serial: null
 })
@@ -18,12 +18,20 @@ export const mutations = {
     loading(state, payload) {
         state.loading = payload
     },
-    totals(state, payload) {
-        state.totals = payload
-    },
     setTotals(state, payload) {
         state.totals = payload
-        console.log(payload)
+    },
+    setTotalsFromResponse(state, res) {
+        let totalCash = 0
+        let totalPackages = 0
+        for (let i = 0; i < res.length; i++) {
+            totalCash = totalCash + (res[i].Price * res[i].Qnt)
+            totalPackages = totalPackages + res[i].Qnt
+        }
+        state.totals = {
+            totalCash,
+            totalPackages
+        }
     },
     appendTotal(state, payload) {
         state.totals.total = state.totals.total + payload
@@ -133,9 +141,9 @@ export const actions = {
             Http.post(`orders/item/delete`, payload)
                 .then(res => {
                     resolve(res.data)
-                    commit('datatable/loading' , true , {root : true})
+                    commit('datatable/loading', true, { root: true })
                     commit('datatable/deleteOrderItem', payload.Serial, { root: true })
-                    commit('datatable/loading' , false , {root : true})
+                    commit('datatable/loading', false, { root: true })
                     commit('setTotals', res.data)
                 })
                 .catch(err => {

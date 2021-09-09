@@ -79,6 +79,8 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -120,7 +122,7 @@ export default {
     strategies: {
       local: {
         token: {
-          property: 'access_token',
+          property: 'Token',
           required: true,
           type: 'Bearer'
         },
@@ -130,12 +132,15 @@ export default {
             callback: '/login',
             home: '/'
         },
-
+        user: {
+          property: false,
+          autoFetch: true
+        },
         
         endpoints: {   
-          login: { url: `login`, method: `post` },
-          logout: { url: `user/logout`, method: `post` },
-          user: { url: `user`, method: `get` }
+          login: { url: `http://192.168.1.40:8586/api/login`, method: `post` },
+          logout: { url: `http://192.168.1.40:8586/api/employee/logout`, method: `post` },
+          user: { url: `http://192.168.1.40:8586/api/employee`, method: `get` }
         }
       }
     }

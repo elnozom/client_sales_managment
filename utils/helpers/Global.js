@@ -6,7 +6,7 @@ export const switchLanguage = (locale, ctx) => {
 }
 
 export const  checkLoggedIn = ctx => {
-  ctx.$store.state.myAuth.loggedIn ? '' : ctx.$router.push('/login')
+  ctx.$auth.loggedIn ? '' : ctx.$router.push('/login')
 }
 
 export const initApp = ctx => new Promise((resolve) => {

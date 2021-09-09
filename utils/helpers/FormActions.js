@@ -12,19 +12,16 @@ export const login = async (ctx, input) => {
     ctx.opts.loading = true
     await ctx.$refs.form.validate()
     if (ctx.opts.valid) {
-    //    console.log(ctx)
+   ctx.form.empCode = parseInt(ctx.form.empCode)
         ctx.$auth
         .loginWith('local', { data: ctx.form })
         .then(()=>{
-            const snackbar = {
-                active : true,
-                text: 'logged_in_successfully'
-            }
-            ctx.$store.commit('ui/setSnackbar' , snackbar)
             ctx.loading  = false
-
+            clearErr(ctx)
+            ctx.$router.push('/')
         }).catch(e => {
-          ctx.err = e.response.data
+          console.log(e)
+          setErr(e, ctx)
           ctx.loading  = false
         })
         
@@ -50,6 +47,7 @@ export const chooseCustomer = async (ctx) => {
         const customer = input.items.filter(item => {
             return item.AccountName === ctx.form[input.prop] ? item : ''
         })[0]
+        ctx.form.customer = null
         ctx.$router.push({ name: 'orders-customer-edit', query: { 'customer_code': customer.AccountCode, 'customer_name': customer.AccountName }, params: { customer: customer.Serial } })
         ctx.$store.commit('ui/customerModal', false)
     }

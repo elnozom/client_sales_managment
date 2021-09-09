@@ -11,8 +11,9 @@
         xs12
         sm8
         md4
-      >
-        <builders-form-builder :opts="opts">
+      > 
+      <!-- {{$auth.loggedIn}} -->
+      <builders-form-builder :opts="opts">
           <template v-slot:numberInput>
             <span v-if="employee">{{employee.EmpName}}</span>
 
@@ -30,7 +31,7 @@ export default {
   layout: 'auth',
   computed: {
     ...mapGetters({
-      employee: 'auth/employee'
+      employee: 'myAuth/employee'
     })
   },
   data() {

@@ -27,12 +27,12 @@ export default class DatatableDirector {
             { text: this.ctx.$t('columns.stop_sale'), value: 'StopSale', align: "center" },
         ]
 
-        //check permissions to show stock
-        this.ctx.$store.state.auth.employee.EmpName === 'Admin' 
-            ? headers1.push({ text: this.ctx.$t('columns.qnt'), value: 'AnQnt', align: "center" })
-        : ''
+        // //check permissions to show stock
+        // this.ctx.$store.state.auth.employee.EmpName === 'Admin' 
+        //     ? headers1.push({ text: this.ctx.$t('columns.qnt'), value: 'AnQnt', align: "center" })
+        // : ''
 
-        console.log(this.ctx.$store.state.auth.employee.EmpName)
+        
 
 
         const headers = headers1.concat(headers2)
@@ -81,7 +81,6 @@ export default class DatatableDirector {
             .setUrl('orders')
             .setEdit(editOrder)
             .setEditable(true)
-            .setQuery('serial')
             .setHeaders(headers)
             .build()
     }
