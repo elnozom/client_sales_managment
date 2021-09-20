@@ -29,8 +29,8 @@ export const mutations = {
             totalPackages = totalPackages + res[i].Qnt
         }
         state.totals = {
-            totalCash,
-            totalPackages
+            TotalCash,
+            TotalPackages
         }
     },
     appendTotal(state, payload) {

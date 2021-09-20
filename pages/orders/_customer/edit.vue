@@ -51,6 +51,8 @@
                 return-object
                 :label="$t(`inputs.item`)"
               ></v-combobox>
+              <span v-if="selectProduct">{{$t('select_product')}}</span>
+
               <!-- <v-icon @click.prevent="createAuthor" >mdi-plus</v-icon> -->
             </div>
 
@@ -63,7 +65,7 @@
               ref="qnt"
               v-model="form.qnt"
               type="number"
-              :rules="rules"
+              :rules="qntRules"
               :label="$t(`inputs.qnt`)"
               @keyup.enter="goTo('price')"
             ></v-text-field>
@@ -97,7 +99,10 @@
               {{$t('form.submit')}}
             </v-btn>
           </v-col>
-          <v-col :cols="12" v-if="$auth.user.SecLevel >= 4">
+          <v-col
+            :cols="12"
+            v-if="$auth.user.SecLevel >= 4 || currentUserIsCreator ||  $auth.user.EmpCode == $route.query.EmpCode"
+          >
             <v-btn
               color="success"
               class="w-full block mt-5"
@@ -144,14 +149,31 @@
 
         <template v-slot:[`item.Qnt`]="{ item }">
           <v-edit-dialog
-            @save="save(item)"
+            @save="save(item , 'qnt')"
             @cancel="cancel"
             @open="open"
           >
-            {{ item.Qnt }}
+            <span v-if="item.ItemHaveAntherUnit">{{ item.QntAntherUnit }}</span>
+            <span v-else>{{ item.Qnt }}</span>
             <template v-slot:input>
               <v-text-field
                 v-model="newQnt"
+                :label="$t('inputs.edit')"
+                single-line
+              ></v-text-field>
+            </template>
+          </v-edit-dialog>
+        </template>
+        <template v-slot:[`item.Price`]="{ item }">
+          <v-edit-dialog
+            @save="save(item , 'price')"
+            @cancel="cancel"
+            @open="open"
+          >
+            {{ item.Price }}
+            <template v-slot:input>
+              <v-text-field
+                v-model="newPrice"
                 :label="$t('inputs.edit')"
                 single-line
               ></v-text-field>
@@ -184,19 +206,25 @@ export default {
       search: '',
       priceErr: null,
       newQnt: '',
+      newPrice: '',
+      currentUserIsCreator:false,
       insertLoading: false,
       valid: false,
       error: '',
       errors: [],
-      rules: [
-        v => !!v || 'required',
+      selectProduct: false,
+      rules: [(v) => !!v || 'required'],
+      qntRules: [
+        (v) => {
+          if (!v || isNaN(v) || v < 1) return 'qnt_min_1'
+        }
       ],
+
       headers: [
         { text: this.$t('columns.code'), value: 'BarCode', align: 'center' },
         { text: this.$t('columns.name'), value: 'ItemName', align: 'center' },
         { text: this.$t('columns.price'), value: 'Price', align: 'center' },
         { text: this.$t('columns.qnt'), value: 'Qnt', align: 'center' },
-        { text: this.$t('columns.QntAntherUnit'), value: 'QntAntherUnit', align: 'center' },
         { text: this.$t('columns.total'), value: 'Total', align: 'center' },
         { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
       ],
@@ -222,26 +250,36 @@ export default {
       this.$store.dispatch('order/deleteItem', { Serial })
     },
     open() {
-      this.snack = true
-      this.snackColor = 'info'
-      this.snackText = this.$t('table.opened')
+      console.log('opened')
     },
     cancel() {
-      this.snack = true
-      this.snackColor = 'error'
-      this.snackText = this.$t('table.cancled')
+      console.log('cancled')
     },
-    save(item) {
-      this.snack = true
-      this.snackColor = 'success'
-      this.snackText = this.$t('table.saved')
-      // MinValue , MaxValue
-      const payload = { Qnt: parseFloat(this.newQnt), Serial: item.Serial }
+    save(item, type) {
+      if (type == 'qnt') {
+        const payload = item.ItemHaveAntherUnit
+          ? {
+              Qnt: parseFloat(this.newQnt),
+              Price: item.Price,
+              Serial: item.Serial
+            }
+          : {
+              Qnt: parseFloat(this.newQnt) * item.AvrWeight,
+              Price: item.Price,
+              Serial: item.Serial
+            }
+      } else {
+        const payload = {
+          Qnt: item.Qnt,
+          Price: parseFloat(this.newPrice),
+          Serial: item.Serial
+        }
+      }
 
       this.update(payload)
     },
     close() {
-      const Serial = this.$route.query.order || this.serial
+      const Serial = parseInt(this.$route.query.serial) || this.serial
       this.$store.dispatch('order/close', { Serial }).then(() => {
         this.$router.push({ name: 'orders' })
       })
@@ -251,6 +289,8 @@ export default {
     },
     itemChanged() {
       // this.priceRules.push()
+
+      if (typeof this.form.item == 'string') return
       this.priceHint = `${this.$t('from')} : ${this.form.item.PMin} ${this.$t(
         'to'
       )} : ${this.form.item.PMax}`
@@ -261,7 +301,8 @@ export default {
     },
     async insertOrder(form) {
       await this.$store.dispatch('order/create', form).then((serial) => {
-        const newQuery = Object.assign({}, this.$route.query, { serial })
+        currentUserIsCreator = true
+        const newQuery = Object.assign({}, this.$route.query, { serial , EmpCode : this.$auth.user.EmpCode})
         // set order number on the url
         addParamsToLocation(newQuery, this.$route.path)
       })
@@ -317,13 +358,18 @@ export default {
     },
     async submit() {
       await this.$refs.form.validate()
-      if(!this.valid){
-        return 
+      if (!this.valid) {
+        return
       }
       this.insertLoading = true
       // validate the price is in the correct range
       if (!this.validatePrice()) return
       // validate there is no items inserted
+      if (typeof this.form.item == 'string') {
+        this.selectProduct = true
+        this.insertLoading = false
+        return
+      }
       // create order
       if (this.datatable.items.length === 0) {
         const orderForm = {
@@ -342,20 +388,22 @@ export default {
         Qnt: parseFloat(this.form.qnt),
         Price: parseFloat(this.form.price)
       }
+
       if (this.form.item.ItemHaveAntherUnit) {
         itemForm.QntAntherUnit = parseFloat(this.form.qnt)
-        itemForm.Qnt = parseFloat(this.form.qnt) * parseFloat(this.form.item.AvrWeight)
+        itemForm.Qnt =
+          parseFloat(this.form.qnt) * parseFloat(this.form.item.AvrWeight)
       }
       //if this is true that means we need to show error because this item has another unit
       // but avgweight is null or 0
-      if(itemForm.qnt == 0){
+      if (itemForm.qnt == 0) {
         const snackbar = {
-                    active : true,
-                    text: 'avg_weight_is_zero'
-                }
-                this.$store.commit('ui/setSnackbar' , snackbar)
-                 this.reset()
-                return
+          active: true,
+          text: 'avg_weight_is_zero'
+        }
+        this.$store.commit('ui/setSnackbar', snackbar)
+        this.reset()
+        return
       }
       this.insertOrderItem(itemForm)
     }

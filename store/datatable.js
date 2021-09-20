@@ -29,6 +29,7 @@ export const mutations = {
             const current = state.orderItemsDatatable.items[[item]]
             if(current.Serial == payload.Serial){
                 current.Qnt = payload.Qnt
+                current.Price = payload.Price
                 current.Total = current.Price * current.Qnt
                 break
             }
@@ -55,16 +56,15 @@ export const mutations = {
 export const actions = {
     
     getOrderItems({commit} , payload){
-        console.log('asdasd')
         commit('orderItemsLoading' , true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve , reject) => {
             Http.get(`orders/items?${serializeQuery(payload)}`)
             .then(res => {
-                commit('orderItemsDatatableItems' , res.data)
+                commit('orderItemsDatatableItems' , res.data.Items)
                 commit('orderItemsLoading' , false)
-                commit('order/setTotalsFromResponse' ,res.data , {root:true})
-                resolve(res)
+                commit('order/setTotals' ,res.data.Totals , {root:true})
+                resolve(res.data)
             })
             .catch(err => {
                 commit('orderItemsLoading' , false)

@@ -12,6 +12,8 @@
       </v-container>
     </v-main>
     <modals-global-customer/>
+    <modals-snack-bar/>
+
     <!-- <layouts-app-footer v-show=" !isLoading" /> -->
   </v-app>
 </template>

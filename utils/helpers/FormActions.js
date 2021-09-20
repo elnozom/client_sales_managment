@@ -12,9 +12,10 @@ export const login = async (ctx, input) => {
     ctx.opts.loading = true
     await ctx.$refs.form.validate()
     if (ctx.opts.valid) {
-   ctx.form.empCode = parseInt(ctx.form.empCode)
+        ctx.form.empCode = parseInt(ctx.form.empCode)
+        // console.log(form)
         ctx.$auth
-        .loginWith('local', { data: ctx.form })
+        .loginWith('local', { data: ctx.form})
         .then(()=>{
             ctx.loading  = false
             clearErr(ctx)

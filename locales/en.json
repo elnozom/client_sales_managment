@@ -12,6 +12,7 @@
   "order_number":"order number",
   "date":"date",
   "cancel":"cancel",
+  "this_order_dosn't_belong_to_you":"this order dosn't belong to you",
   "ok":"ok",
   "login": {
     "username": "username",
@@ -73,6 +74,8 @@
     "limited":"limited",
     "max_price":"max price",
     "min_price":"min price",
+    "select_product" :"Please select a product",
+    "qnt_min_1" : "The quantity must be over 1",
     "stop_sale":"stop sale",
     "qnt": "quantity"
   }

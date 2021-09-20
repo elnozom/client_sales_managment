@@ -24,9 +24,13 @@ import { mapGetters  } from 'vuex';
 
 export default {
     computed: {
-      ...mapGetters({
-          snackbar: 'ui/snackbar',
-      })
+      snackbar: {
+			get: function() {
+				return this.$store.getters['ui/snackbar']
+			},
+			set: function(value) {
+				this.$store.commit('ui/setSnackbar',  {active: false,text: ''})
+			}}
     },
     methods:{
       close(){

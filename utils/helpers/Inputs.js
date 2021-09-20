@@ -8,10 +8,10 @@ export const code = {
     prop : "empCode",
     ref : "code",
     enter : (ctx, input) =>   ctx.$refs.password[0].focus(),
-    // blur : getEmp,
+    blur : getEmp,
     cols : 12,
     label : 'code',
-    rules : [required ],
+    rules : [required],
 }
 
 

@@ -70,7 +70,7 @@
     "delete" : "حذف",
     "employee": "الموظف",
     "totla": "الاجمالي",
-    "docNo": "رقم المنتج",
+    "docNo": "رقم الطلب",
     "docDate": "التاريخ",
     "empName": "اسم الموظف",
     "empCode": "كود الموظف",
@@ -84,11 +84,15 @@
     "note": "ملاحظة",
     "actions": "الاجرائات",
     "weight":"الوزن",
+    "select_product" :"من فضلك قم باختيار المنتج",
     "limited":"محدود",
     "max_price":"اعلي سعر",
     "min_price":"اقل سعر",
+    "qnt_min_1" : "لا يمكن ان تقل الكمية عن 1",
     "stop_sale":"وقف البيع",
-    "qnt": " الكمية الفعلية",
-    "QntAntherUnit" : "الكمية"
+    "qnt": " الكمية ",
+    "this_order_dosn't_belong_to_you":"عفوا انت لا تملك صلاحية التعديل علي هذا الطلب",
+    "delete": " حذف ",
+    "QntAntherUnit" : "الكمية بالكرتونة"
   }
 }
