@@ -1,10 +1,9 @@
-import { viewProduct, editProduct , editOrder } from "@/utils/helpers/DataTableActions.js"
+import { viewProduct, editProduct , editOrder , createOrder } from "@/utils/helpers/DataTableActions.js"
 export default class DatatableDirector {
     constructor(builder , ctx) {
         this.builder = builder
         this.ctx = ctx
     }
-
     makeProducts() {
         let headers1 = [
             // { text: this.t.$t(this.ctx.$t('columns.codeasdasd')), value: 'code', align: "center" },
@@ -73,6 +72,7 @@ export default class DatatableDirector {
             { text: this.ctx.$t('columns.empCode'), value: 'EmpCode', align: "center" },
             { text: this.ctx.$t('columns.totalCash'), value: 'TotalCash', align: "center" },
             { text: this.ctx.$t('columns.docDate'), value: 'DocDate', align: "center" },
+            { text: this.ctx.$t('columns.reserved'), value: 'Reserved', align: "center" },
             { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
         ]
         
@@ -81,6 +81,9 @@ export default class DatatableDirector {
             .setUrl('orders')
             .setEdit(editOrder)
             .setEditable(true)
+            .setCreateAble(true)
+            .setCreateAble(true)
+            .setCreate(createOrder)
             .setHeaders(headers)
             .build()
     }

@@ -158,7 +158,7 @@
           </v-col>
           <v-col :cols="opts.btnCols ? opts.btnCols : 12">
             <v-btn
-              color="success"
+              color="primary"
               class="w-full block mt-5"
               :disabled="!opts.valid && opts.errors.length == 0"
               :loading="opts.loading"

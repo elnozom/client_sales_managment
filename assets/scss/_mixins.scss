@@ -14,3 +14,10 @@
     display: flex;
     justify-content: center;
 }
+
+
+@mixin flex-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}

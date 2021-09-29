@@ -2,10 +2,12 @@
     background: var(--main-gredient) !important;
     color:#fff !important;
     box-shadow: var(--color-boxshadow) !important;
-    border-radius: 0 5px 5px 0 !important;
     margin-right: 10px !important;
     & .primary--text{
         color:#fff !important;
+    }
+    &:before{
+        border-radius: 0 5px 5px 0 !important;  
     }
 }
 .logo{

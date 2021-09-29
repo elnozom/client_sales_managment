@@ -85,12 +85,12 @@
               :label="$t(`inputs.price`)"
               @keyup.enter="submit"
             ></v-text-field>
-            <span v-if="priceErr != null">{{priceErr}}</span>
+            <span v-if="priceErr != null">{{$t(priceErr)}}</span>
 
           </v-col>
           <v-col :cols="3">
             <v-btn
-              color="success"
+              color="primary"
               class="w-full block mt-5"
               :disabled="!valid && errors.length == 0"
               :loading="insertLoading"
@@ -99,20 +99,61 @@
               {{$t('form.submit')}}
             </v-btn>
           </v-col>
-          <v-col
-            :cols="12"
-            v-if="$auth.user.SecLevel >= 4 || currentUserIsCreator ||  $auth.user.EmpCode == $route.query.EmpCode"
-          >
-            <v-btn
-              color="success"
-              class="w-full block mt-5"
-              :disabled="datatable.items.length == 0"
-              :loading="insertLoading"
-              @click.prevent="close"
-            >
-              {{$t('form.close')}}
-            </v-btn>
-          </v-col>
+          <v-row v-if="$auth.user.SecLevel >= 4">
+            <v-col :cols="8">
+              <v-btn
+                color="primary"
+                class="w-full block mt-5"
+                :disabled="datatable.items.length == 0"
+                :loading="insertLoading"
+                @click.prevent="save"
+              >
+                <v-icon
+                  right
+                  dark
+                  class="mr-3"
+                >
+                  mdi-content-save-check-outline
+                </v-icon>
+                {{$t('form.save')}}
+              </v-btn>
+            </v-col>
+            <v-col :cols="4">
+              <v-btn
+                class="w-full danger block my-5"
+                :loading="insertLoading"
+                @click.prevent="discard"
+              >
+                <v-icon
+                  class="ml-3"
+                  right
+                  dark
+                >
+                  mdi-close-box-outline
+                </v-icon>
+                {{$t('form.discard')}}
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+
+            <v-col :cols="12">
+              <v-btn
+                class="w-full danger block my-5"
+                :loading="insertLoading"
+                @click.prevent="discard"
+              >
+                <v-icon
+                  class="ml-3"
+                  right
+                  dark
+                >
+                  mdi-close-box-outline
+                </v-icon>
+                {{$t('form.discard')}}
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-row>
       </v-form>
       <v-data-table
@@ -149,7 +190,7 @@
 
         <template v-slot:[`item.Qnt`]="{ item }">
           <v-edit-dialog
-            @save="save(item , 'qnt')"
+            @save="updateQnt(item)"
             @cancel="cancel"
             @open="open"
           >
@@ -166,7 +207,7 @@
         </template>
         <template v-slot:[`item.Price`]="{ item }">
           <v-edit-dialog
-            @save="save(item , 'price')"
+            @save="updatePrice(item)"
             @cancel="cancel"
             @open="open"
           >
@@ -175,6 +216,7 @@
               <v-text-field
                 v-model="newPrice"
                 :label="$t('inputs.edit')"
+                :messages=" `${$t('from')} : ${item.PriceMin} ${$t('to')} : ${item.PriceMax}`"
                 single-line
               ></v-text-field>
             </template>
@@ -207,7 +249,7 @@ export default {
       priceErr: null,
       newQnt: '',
       newPrice: '',
-      currentUserIsCreator:false,
+      currentUserIsCreator: false,
       insertLoading: false,
       valid: false,
       error: '',
@@ -255,27 +297,42 @@ export default {
     cancel() {
       console.log('cancled')
     },
-    save(item, type) {
-      if (type == 'qnt') {
-        const payload = item.ItemHaveAntherUnit
-          ? {
-              Qnt: parseFloat(this.newQnt),
-              Price: item.Price,
-              Serial: item.Serial
-            }
-          : {
-              Qnt: parseFloat(this.newQnt) * item.AvrWeight,
-              Price: item.Price,
-              Serial: item.Serial
-            }
-      } else {
-        const payload = {
-          Qnt: item.Qnt,
-          Price: parseFloat(this.newPrice),
-          Serial: item.Serial
-        }
-      }
 
+    updatePrice(item) {
+      const newPrice = parseFloat(this.newPrice)
+      const priceErr = this.validatePrice(
+        newPrice,
+        item.PriceMin,
+        item.PriceMax
+      )
+      if (priceErr != null) {
+        const snackbar = {
+          active: true,
+          text: priceErr
+        }
+        if (!this.$store.getters['ui/snackbar'].active)
+          this.$store.commit('ui/setSnackbar', snackbar)
+        return
+      }
+      const payload = {
+        Qnt: item.Qnt,
+        Price: parseFloat(this.newPrice),
+        Serial: item.Serial
+      }
+      this.update(payload)
+    },
+    updateQnt(item) {
+      const payload = item.ItemHaveAntherUnit
+        ? {
+            Qnt: parseFloat(this.newQnt) * item.AvrWeight,
+            Price: item.Price,
+            Serial: item.Serial
+          }
+        : {
+            Qnt: parseFloat(this.newQnt),
+            Price: item.Price,
+            Serial: item.Serial
+          }
       this.update(payload)
     },
     close() {
@@ -283,6 +340,12 @@ export default {
       this.$store.dispatch('order/close', { Serial }).then(() => {
         this.$router.push({ name: 'orders' })
       })
+    },
+    save() {},
+    async discard() {
+      const Serial = parseInt(this.$route.query.serial) || this.serial
+      await this.$store.dispatch('order/exit', { Serial })
+      this.$router.push({ name: 'orders' })
     },
     async update(payload) {
       this.$store.dispatch('order/updateItem', payload)
@@ -301,14 +364,16 @@ export default {
     },
     async insertOrder(form) {
       await this.$store.dispatch('order/create', form).then((serial) => {
-        currentUserIsCreator = true
-        const newQuery = Object.assign({}, this.$route.query, { serial , EmpCode : this.$auth.user.EmpCode})
+        this.currentUserIsCreator = true
+        const newQuery = Object.assign({}, this.$route.query, {
+          serial,
+          EmpCode: this.$auth.user.EmpCode
+        })
         // set order number on the url
         addParamsToLocation(newQuery, this.$route.path)
       })
     },
     insertOrderItem(form) {
-      console.log(form)
       this.$store.dispatch('order/insertItem', form).then((res) => {
         const total = parseFloat(this.form.price) * parseFloat(this.form.qnt)
         const item = {
@@ -318,6 +383,8 @@ export default {
           Qnt: form.Qnt,
           QntAntherUnit: form.QntAntherUnit || 0,
           Price: parseFloat(this.form.price),
+          PriceMax: form.PriceMax,
+          PriceMin: form.PriceMin,
           Total: total
         }
         this.$store.commit('datatable/prependOrderItemsDatatable', item)
@@ -331,21 +398,14 @@ export default {
       this.insertLoading = false
       this.$store.commit('datatable/orderItemsLoading', false)
     },
-    validatePrice() {
-      //validate the price
-      const price = parseFloat(this.form.price)
-      if (price < this.form.item.PMin) {
-        this.priceErr = this.$t('validations.min')
-        this.insertLoading = false
-        return false
+    validatePrice(price, min, max) {
+      if (price < min) {
+        return 'validations.min'
       }
-      if (price > this.form.item.PMax) {
-        this.priceErr = this.$t('validations.max')
-        this.insertLoading = false
-        return false
+      if (price > max) {
+        return 'validations.max'
       }
-      this.priceErr = null
-      return true
+      return null
     },
     init() {
       this.$store.dispatch('global/getCustomer', this.$route.params.customer)
@@ -363,7 +423,17 @@ export default {
       }
       this.insertLoading = true
       // validate the price is in the correct range
-      if (!this.validatePrice()) return
+      const priceErr = this.validatePrice(
+        parseFloat(this.form.price),
+        this.form.item.PMin,
+        this.form.item.PMax
+      )
+      if (priceErr != null) {
+        this.priceErr = priceErr
+        this.insertLoading = false
+        return
+      }
+      this.priceErr = ''
       // validate there is no items inserted
       if (typeof this.form.item == 'string') {
         this.selectProduct = true
@@ -386,7 +456,10 @@ export default {
         HeadSerial: serial,
         ItemSerial: this.form.item.Serial,
         Qnt: parseFloat(this.form.qnt),
-        Price: parseFloat(this.form.price)
+        Price: parseFloat(this.form.price),
+        PriceMax: parseFloat(this.form.item.PMax),
+        PriceMin: parseFloat(this.form.item.PMin),
+        MinorPerMajor: parseFloat(this.form.item.MinorPerMajor)
       }
 
       if (this.form.item.ItemHaveAntherUnit) {

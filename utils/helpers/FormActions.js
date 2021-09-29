@@ -12,20 +12,18 @@ export const login = async (ctx, input) => {
     ctx.opts.loading = true
     await ctx.$refs.form.validate()
     if (ctx.opts.valid) {
-        ctx.form.empCode = parseInt(ctx.form.empCode)
-        // console.log(form)
         ctx.$auth
-        .loginWith('local', { data: ctx.form})
-        .then(()=>{
-            ctx.loading  = false
-            clearErr(ctx)
-            ctx.$router.push('/')
-        }).catch(e => {
-          console.log(e)
-          setErr(e, ctx)
-          ctx.loading  = false
-        })
-        
+            .loginWith('local', { data: ctx.form })
+            .then(() => {
+                ctx.loading = false
+                clearErr(ctx)
+                ctx.$router.push('/')
+            }).catch(e => {
+                console.log(e.response.data)
+                typeof e.response.data != 'undefined' ? setErr(e.response.data, ctx) : console.log(e)
+                ctx.loading = false
+            })
+
         // ctx.$store.dispatch('myAuth/login', {code : ctx.form.code ,password: ctx.form.password})
         //     .then(() => {
         //         clearErr(ctx)
@@ -92,7 +90,7 @@ export const innsertDocItem = async (ctx, input) => {
     ctx.$store.dispatch('order/insertItem', itemForm)
         .then(res => {
             const total = parseFloat(ctx.form.price) * parseFloat(ctx.form.qnt)
-            const totalP =  parseFloat(ctx.form.qnt)
+            const totalP = parseFloat(ctx.form.qnt)
 
             const item = {
                 "Serial": 42,
@@ -101,13 +99,13 @@ export const innsertDocItem = async (ctx, input) => {
                 "Qnt": parseFloat(ctx.form.qnt),
                 "Price": parseFloat(ctx.form.price),
                 "Total": total
-              }
-            ctx.$store.commit('order/appendTotal' , total)
-            ctx.$store.commit('order/appendPackages' ,totalP)
-            ctx.$store.commit('datatable/appendRow' ,item)
-            
+            }
+            ctx.$store.commit('order/appendTotal', total)
+            ctx.$store.commit('order/appendPackages', totalP)
+            ctx.$store.commit('datatable/appendRow', item)
 
-            console.log('form' , item)
+
+            console.log('form', item)
         })
 
     ctx.opts.loading = false

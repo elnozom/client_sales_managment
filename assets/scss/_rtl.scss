@@ -12,6 +12,21 @@
         margin-left : 16px;
     }
 
+    & .ml-4 {
+        margin-left : 0 !important;
+        margin-right: 16px;
+    }
+
+    & .v-toolbar__content .mr-3 {
+        margin-right: 0 !important;
+        margin-left : 12px;
+    }
+
+    & .v-toolbar__content .ml-3 {
+        margin-left : 0 !important;
+        margin-right: 12px;
+    }
+
     & .m-l-sidebar {
         margin-left : auto !important;
         margin-right: var(--sidebar-with) !important;
@@ -26,5 +41,10 @@
         border-radius: 5px 0 0 5px !important;
         margin-right : 0 !important;
         margin-left  : 10px !important;
+
+        &:before {
+            border-radius: 5px 0 0 5px !important;
+        }
+
     }
 }

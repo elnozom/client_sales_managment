@@ -1,8 +1,7 @@
 <template>
   <div class="text-center ma-2">
     <v-snackbar
-      v-model="snackbar.active"
-      :timeout="3000"
+      v-model="active"
     >
       {{ $t(snackbar.text) }}
 
@@ -20,16 +19,21 @@
 </template>
 
 <script>
-import { mapGetters  } from 'vuex';
-
 export default {
+  data(){
+    return {
+      active : false,
+    }
+  },
     computed: {
       snackbar: {
 			get: function() {
-				return this.$store.getters['ui/snackbar']
+        const sb = this.$store.getters['ui/snackbar']
+        this.active = sb.active
+				return sb
 			},
 			set: function(value) {
-				this.$store.commit('ui/setSnackbar',  {active: false,text: ''})
+				this.$store.commit('ui/setSnackbar',  {active: value,text: ''})
 			}}
     },
     methods:{

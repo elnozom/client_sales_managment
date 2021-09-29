@@ -75,9 +75,7 @@ export const actions = {
         commit('loading', true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve, reject) => {
-            dispatch('getOrderNo').then(res => {
-                payload.DocNo = res
-                Http.post(`orders`, payload)
+            Http.post(`orders`, payload)
                     .then(res => {
                         resolve(res.data)
                         commit('serial', res.data)
@@ -85,7 +83,22 @@ export const actions = {
                     .catch(err => {
                         reject(err)
                     })
-            })
+            
+        });
+    },
+    exit({ commit }, payload) {
+        commit('loading', true)
+        return new Promise((resolve, reject) => {
+            Http.post(`orders/exit`, payload)
+                    .then(res => {
+                        resolve(res.data)
+                        commit('loading', true)
+                    })
+                    .catch(err => {
+                        reject(err)
+                        commit('loading', true)
+                    })
+            
         });
     },
     close({ commit, state }, payload) {

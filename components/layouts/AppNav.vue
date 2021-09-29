@@ -51,7 +51,7 @@
       />
       <!-- <v-toolbar-title v-text="'El Nozom'" /> -->
       <v-spacer />
-        <v-icon class="pointer ml-3" @click.prevent="$store.commit('ui/customerModal' , true)" left>
+        <v-icon class="pointer" color="white" @click.prevent="$store.commit('ui/customerModal' , true)" left>
           mdi-plus
         </v-icon>
       <!-- <v-btn
@@ -61,12 +61,12 @@
         {{$t('create_order')}}
       </v-btn> -->
       <v-icon
-        class="pointer "
-        color="white"
+        class="pointer ml-3"
+        color="white "
         @click.prevent="switchLanguage"
       >mdi-earth</v-icon>
       <v-icon
-        class="pointer mr-4"
+        class="pointer mx-3"
         color="white"
         @click.prevent="switchTheme"
       >mdi-weather-night</v-icon>

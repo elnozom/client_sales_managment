@@ -73,7 +73,7 @@
                 v-model="search"
                 append-icon="mdi-magnify"
                 :label="$t('inputs.search')"
-                single-line
+                clearable
                 hide-details
               >
               </v-text-field>
@@ -91,8 +91,25 @@
                 {{$t(`table.remember_my_choices`)}}
               </v-btn>
             </v-col>
-          </v-row>
 
+          </v-row>
+          <div class="flex-end">
+
+            <v-btn
+              v-if="opts.createable == true"
+              @click.prevent="create()"
+              color="primary"
+              :loding="createLoading"
+            >
+              <v-icon
+                right
+                dark
+                class="ml-3"
+              >
+                mdi-plus
+              </v-icon>{{$t('create')}}
+            </v-btn>
+          </div>
         </div>
 
       </template>
@@ -122,6 +139,32 @@
             mdi-lock-open-variant-outline
           </v-icon>
           {{$t('table.not_limited')}}
+        </v-chip>
+      </template>
+      <template v-slot:[`item.Reserved`]="{ item }">
+        <v-chip
+          class="ma-2"
+          color="red"
+          label
+          text-color="white"
+          v-if="item.Reserved"
+        >
+          <v-icon left>
+            mdi-lock-alert-outline
+          </v-icon>
+          {{$t('table.reserved')}}
+        </v-chip>
+        <v-chip
+          class="ma-2"
+          color="green"
+          label
+          text-color="white"
+          v-else
+        >
+          <v-icon left>
+            mdi-lock-open-variant-outline
+          </v-icon>
+          {{$t('table.not_reserved')}}
         </v-chip>
       </template>
       <template v-slot:[`item.StopSale`]="{ item }">

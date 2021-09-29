@@ -9,7 +9,7 @@ export default {
 
 
   env :{
-    apiUrl:"http://192.168.1.167:8586/api/",
+    apiUrl:"http://192.168.1.40:8586/api/",
     storeCode:1,
   },
   // Target: https://go.nuxtjs.dev/config-target
@@ -138,9 +138,9 @@ export default {
         },
         
         endpoints: {   
-          login: { url: `http://192.168.1.167:8586/api/login`, method: `post` },
-          logout: { url: `http://192.168.1.167:8586/api/employee/logout`, method: `post` },
-          user: { url: `http://192.168.1.167:8586/api/employee`, method: `get` }
+          login: { url: `http://192.168.1.40:8586/api/login`, method: `post` },
+          logout: { url: `http://192.168.1.40:8586/api/employee/logout`, method: `post` },
+          user: { url: `http://192.168.1.40:8586/api/employee`, method: `get` }
         }
       }
     }

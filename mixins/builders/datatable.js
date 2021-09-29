@@ -10,6 +10,7 @@ export default {
             snackColor: '',
             snackText: '',
             PMin: '',
+            createLoading :false,
             PMax: '',
             datatable: {},
             form: {
@@ -70,8 +71,10 @@ export default {
         deleted() {
             console.log('deel')
         },
-        create() {
-            this.opts.create(this)
+        async create()  {
+            this.createLoading=true
+            await this.opts.create(this)
+            this.createLoading=false
         },
         isNumber(evt) {
             evt = (evt) ? evt : window.event;
