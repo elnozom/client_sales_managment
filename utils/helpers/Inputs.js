@@ -1,5 +1,5 @@
-import {required  , min6} from './Validations.js'
-import { getEmp  , login , getProductSerial , itemChanged ,  innsertDocItem } from '@/utils/helpers/FormActions.js'
+import {required  , min6 , min0} from './Validations.js'
+import { getEmp  , login , getProductSerial , itemChanged ,chooseCustomer, innsertDocItem } from '@/utils/helpers/FormActions.js'
 
 // login
 export const code = {
@@ -11,7 +11,7 @@ export const code = {
     blur : getEmp,
     cols : 12,
     label : 'code',
-    rules : [required],
+    rules : [required , min0],
 }
 
 
@@ -37,6 +37,7 @@ export const customer = {
     url : 'account?type=1',
     prop : "customer",
     inputText: "AccountName",
+    enter: chooseCustomer,
     inputValue: "",
     ref : "customer",
     cols : 12,

@@ -1,6 +1,7 @@
 
 export const  required = v => !!v || 'required'
 export const  min6 = v => !!v || 'min6'
+
 export const  email = v => /.+@.+/.test(v) || 'email'
 export const  man255 = v => v.length > 255 || 'min255'
 export const  number = v => {
@@ -18,6 +19,11 @@ export const  percent = v => {
 export const  min = (v , min) => {
     if(v && v < min){
         return 'min'
+    }
+}
+export const  min0 = v  => {
+    if(v && v < 0){
+        return 'min0'
     }
 }
 export const  max = (v , max) => {

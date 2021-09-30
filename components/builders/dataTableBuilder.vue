@@ -156,6 +156,18 @@
         </v-chip>
         <v-chip
           class="ma-2"
+          color="red"
+          label
+          text-color="white"
+          v-else-if="item.StkTr01Serial > 0"
+        >
+          <v-icon left>
+            mdi-lock-alert-outline
+          </v-icon>
+          {{$t('table.distibuted')}}
+        </v-chip>
+        <v-chip
+          class="ma-2"
           color="green"
           label
           text-color="white"

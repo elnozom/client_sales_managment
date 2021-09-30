@@ -65,9 +65,13 @@ export const actions = {
             Http.get(`orders/no`, { StoreCode })
                 .then(res => {
                     resolve(res.data)
+                    commit('loading', false)
+
                 })
                 .catch(err => {
                     reject(err)
+                    commit('loading', false)
+
                 })
         });
     },
@@ -76,29 +80,33 @@ export const actions = {
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve, reject) => {
             Http.post(`orders`, payload)
-                    .then(res => {
-                        resolve(res.data)
-                        commit('serial', res.data)
-                    })
-                    .catch(err => {
-                        reject(err)
-                    })
-            
+                .then(res => {
+                    resolve(res.data)
+                    commit('serial', res.data)
+                    commit('loading', false)
+
+                })
+                .catch(err => {
+                    reject(err)
+                    commit('loading', false)
+
+                })
+
         });
     },
     exit({ commit }, payload) {
         commit('loading', true)
         return new Promise((resolve, reject) => {
             Http.post(`orders/exit`, payload)
-                    .then(res => {
-                        resolve(res.data)
-                        commit('loading', true)
-                    })
-                    .catch(err => {
-                        reject(err)
-                        commit('loading', true)
-                    })
-            
+                .then(res => {
+                    resolve(res.data)
+                    commit('loading', false)
+                })
+                .catch(err => {
+                    reject(err)
+                    commit('loading', false)
+                })
+
         });
     },
     close({ commit, state }, payload) {
@@ -110,9 +118,11 @@ export const actions = {
                     commit('datatable/reset', null, { root: true })
                     commit('reset')
                     resolve(res.data)
+                    commit('loading', false)
                 })
                 .catch(err => {
                     reject(err)
+                    commit('loading', false)
                 })
         });
     },
@@ -128,9 +138,11 @@ export const actions = {
                         TotalCash: res.data.TotalCash,
                     }
                     commit('setTotals', totals)
+                    commit('loading', false)
                 })
                 .catch(err => {
                     reject(err)
+                    commit('loading', false)
                 })
         });
     },
@@ -142,9 +154,30 @@ export const actions = {
                     resolve(res.data)
                     commit('setTotals', res.data)
                     commit('datatable/updateOrderItem', payload, { root: true })
+                    commit('loading', false)
                 })
                 .catch(err => {
                     reject(err)
+                    commit('loading', false)
+
+                })
+        });
+    },
+    
+    updateOrderReserved({ commit }, payload) {
+        console.log("asd")
+        commit('loading', true)
+        return new Promise((resolve, reject) => {
+            Http.post(`orders/reserve`, payload)
+                .then(res => {
+                    resolve(res.data)
+                    commit('loading', false)
+
+                })
+                .catch(err => {
+                    reject(err)
+                    commit('loading', false)
+
                 })
         });
     },
@@ -158,9 +191,12 @@ export const actions = {
                     commit('datatable/deleteOrderItem', payload.Serial, { root: true })
                     commit('datatable/loading', false, { root: true })
                     commit('setTotals', res.data)
+                    commit('loading', false)
+
                 })
                 .catch(err => {
                     reject(err)
+                    commit('loading', false)
                 })
         });
     }

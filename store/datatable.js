@@ -55,7 +55,7 @@ export const mutations = {
 
 export const actions = {
     
-    getOrderItems({commit} , payload){
+    getOrderItems({commit , dispatch} , payload){
         commit('orderItemsLoading' , true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve , reject) => {

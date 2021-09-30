@@ -10,15 +10,35 @@ export const viewProduct = (ctx, item) => {
 }
 
 export const editOrder = (ctx, item) => {
-    if (ctx.$auth.user.SecLeve >= 4 || ctx.$auth.user.EmpCode == item.EmpCode) {
-        ctx.$router.push({ name: 'orders-customer-edit', query: { 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName }, params: { customer: item.CustomerSerial } })
-    } else {
+    if(item.Reserved == true){
+        const snackbar = {
+            active: true,
+            text: 'order_is_reserved',
+        }
+        if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+    }
+    if(item.StkTr01Serial > 0){
+        const snackbar = {
+            active: true,
+            text: 'order_is_posted',
+        }
+        if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+    }
+    if (!(ctx.$auth.user.SecLeve >= 4 || ctx.$auth.user.EmpCode == item.EmpCode)) {
         const snackbar = {
             active: true,
             text: 'this_order_dosn\'t_belong_to_you',
         }
         if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+
     }
+    ctx.$router.push({ name: 'orders-customer-edit', query: { 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName }, params: { customer: item.CustomerSerial } })
 }
 
 export const createOrder = (ctx) => {

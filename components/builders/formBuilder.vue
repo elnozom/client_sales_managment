@@ -157,15 +157,15 @@
             </div>
           </v-col>
           <v-col :cols="opts.btnCols ? opts.btnCols : 12">
-            <v-btn
-              color="primary"
-              class="w-full block mt-5"
+            <base-btn
+              :classNames="['primary' , 'mt-5']"
+              icon="mdi-content-save-all-outline"
+              @clicked="submit"
+              text="form.submit"
+              :loading="insertLoading"
               :disabled="!opts.valid && opts.errors.length == 0"
-              :loading="opts.loading"
-              @click.prevent="submit"
-            >
-              {{$t('form.submit')}}
-            </v-btn>
+            />
+            
           </v-col>
         </v-row>
       </v-form>

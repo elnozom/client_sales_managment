@@ -16,7 +16,7 @@
         <v-card>
           <v-card-title class="block">
             <p class="block text-whitte">{{$t('total')}} : EGP{{totals.TotalCash}} </p>
-            <p class="block text-whitte">{{$t('total_packages')}} : {{totals.TotalPackages}}</p>
+            <!-- <p class="block text-whitte">{{$t('total_packages')}} : {{totals.TotalPackages}}</p> -->
           </v-card-title>
         </v-card>
       </div>
@@ -40,6 +40,7 @@
           >
             <div class="combobox">
               <v-combobox
+                prepend-icon="mdi-food-steak"
                 v-model="form.item"
                 ref="item"
                 :items="items"
@@ -63,11 +64,12 @@
           >
             <v-text-field
               ref="qnt"
+              prepend-icon="mdi-numeric"
               v-model="form.qnt"
               type="number"
               :rules="qntRules"
               :label="$t(`inputs.qnt`)"
-              @keyup.enter="goTo('price')"
+              @keyup.enter="goToPrice()"
             ></v-text-field>
 
           </v-col>
@@ -79,6 +81,7 @@
             <v-text-field
               ref="price"
               v-model="form.price"
+              prepend-icon="mdi-cash-multiple"
               type="number"
               :rules="rules"
               :messages="priceHint"
@@ -89,69 +92,40 @@
 
           </v-col>
           <v-col :cols="3">
-            <v-btn
-              color="primary"
-              class="w-full block mt-5"
-              :disabled="!valid && errors.length == 0"
+            <base-btn
+              :classNames="['primary' , 'mt-5']"
+              icon="mdi-content-save-all-outline"
+              @clicked="submit"
+              text="form.submit"
               :loading="insertLoading"
-              @click.prevent="submit"
-            >
-              {{$t('form.submit')}}
-            </v-btn>
+              :disabled="!valid && errors.length == 0"
+            />
           </v-col>
-          <v-row v-if="$auth.user.SecLevel >= 4">
-            <v-col :cols="8">
-              <v-btn
-                color="primary"
-                class="w-full block mt-5"
-                :disabled="datatable.items.length == 0"
+          <v-row
+            class="px-4 pb-4"
+            v-if="$auth.user.SecLevel >= 4"
+          >
+            <v-col
+              :cols="8"
+              v-if="$auth.user.SecLevel >= 4"
+            >
+              <base-btn
+                :classNames="['primary' , 'my-5']"
+                icon="mdi-check-all"
+                @clicked="save"
+                text="form.save"
                 :loading="insertLoading"
-                @click.prevent="save"
-              >
-                <v-icon
-                  right
-                  dark
-                  class="mr-3"
-                >
-                  mdi-content-save-check-outline
-                </v-icon>
-                {{$t('form.save')}}
-              </v-btn>
+                :disabled="!valid && errors.length == 0"
+              />
             </v-col>
-            <v-col :cols="4">
-              <v-btn
-                class="w-full danger block my-5"
+            <v-col :cols="$auth.user.SecLevel >= 4 ? 4: 12">
+              <base-btn
+                :classNames="['danger' , 'my-5']"
+                icon="mdi-close-box-outline"
+                @clicked="discard"
+                text="form.discard"
                 :loading="insertLoading"
-                @click.prevent="discard"
-              >
-                <v-icon
-                  class="ml-3"
-                  right
-                  dark
-                >
-                  mdi-close-box-outline
-                </v-icon>
-                {{$t('form.discard')}}
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row v-else>
-
-            <v-col :cols="12">
-              <v-btn
-                class="w-full danger block my-5"
-                :loading="insertLoading"
-                @click.prevent="discard"
-              >
-                <v-icon
-                  class="ml-3"
-                  right
-                  dark
-                >
-                  mdi-close-box-outline
-                </v-icon>
-                {{$t('form.discard')}}
-              </v-btn>
+              />
             </v-col>
           </v-row>
         </v-row>
@@ -214,6 +188,7 @@
             {{ item.Price }}
             <template v-slot:input>
               <v-text-field
+                prepend-icon="mdi-cash-multiple"
                 v-model="newPrice"
                 :label="$t('inputs.edit')"
                 :messages=" `${$t('from')} : ${item.PriceMin} ${$t('to')} : ${item.PriceMax}`"
@@ -223,11 +198,13 @@
           </v-edit-dialog>
         </template>
         <template v-slot:[`item.delete`]="{ item }">
-
-          <v-btn
-            danger
-            @click="deleteItem(item.Serial)"
-          >{{$t('delete')}}</v-btn>
+          <base-btn
+            :classNames="['danger']"
+            icon="mdi-delete-outline"
+            @clicked="deleteItem(item.Serial)"
+            text="delete"
+            :loading="deleteLoading"
+          />
         </template>
 
         <template v-slot:no-data>
@@ -255,10 +232,10 @@ export default {
       error: '',
       errors: [],
       selectProduct: false,
-      rules: [(v) => !!v || 'required'],
+      rules: [(v) => !!v || this.$t('validations.required')],
       qntRules: [
         (v) => {
-          if (!v || isNaN(v) || v < 1) return 'qnt_min_1'
+          if (!v || isNaN(v) || v < 1) return this.$t('validations.min1')
         }
       ],
 
@@ -284,7 +261,8 @@ export default {
       datatable: 'datatable/orderItemsDatatable',
       items: 'item/items',
       serial: 'order/serial',
-      itemsLoaging: 'item/loading'
+      itemsLoaging: 'item/loading',
+      deleteLoading: 'order/loading'
     })
   },
   methods: {
@@ -335,17 +313,19 @@ export default {
           }
       this.update(payload)
     },
-    close() {
+    save() {
       const Serial = parseInt(this.$route.query.serial) || this.serial
       this.$store.dispatch('order/close', { Serial }).then(() => {
         this.$router.push({ name: 'orders' })
       })
     },
-    save() {},
     async discard() {
       const Serial = parseInt(this.$route.query.serial) || this.serial
-      await this.$store.dispatch('order/exit', { Serial })
-      this.$router.push({ name: 'orders' })
+      this.$store
+        .dispatch('order/updateOrderReserved', { Serial, Reserved: false })
+        .then(() => {
+          this.$router.push({ name: 'orders' })
+        })
     },
     async update(payload) {
       this.$store.dispatch('order/updateItem', payload)
@@ -354,6 +334,16 @@ export default {
       // this.priceRules.push()
 
       if (typeof this.form.item == 'string') return
+
+      if(this.form.item.StopSale){
+        const snackbar = {
+          active: true,
+          text: 'item_has_stop_sale'
+        }
+        this.$store.commit('ui/setSnackbar', snackbar)
+        this.reset()
+        return
+      }
       this.priceHint = `${this.$t('from')} : ${this.form.item.PMin} ${this.$t(
         'to'
       )} : ${this.form.item.PMax}`
@@ -414,7 +404,15 @@ export default {
         this.$store.dispatch('datatable/getOrderItems', {
           serial: this.$route.query.serial
         })
+        const Serial = parseInt(this.$route.query.serial) || this.serial
+        this.$store.dispatch('order/updateOrderReserved', {
+          Serial,
+          Reserved: true
+        })
       }
+    },
+    goToPrice(){
+      if(this.form.qnt != '' && this.form.qnt != null  ) this.goTo('price') 
     },
     async submit() {
       await this.$refs.form.validate()
@@ -480,6 +478,13 @@ export default {
       }
       this.insertOrderItem(itemForm)
     }
+  },
+  async beforeDestroy() {
+    const Serial = parseInt(this.$route.query.serial) || this.serial
+    this.$store.dispatch('order/updateOrderReserved', {
+      Serial,
+      Reserved: false
+    })
   },
   created() {
     this.init()
