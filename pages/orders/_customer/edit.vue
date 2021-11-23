@@ -1,4 +1,27 @@
 <template>
+<div class="printme">
+  <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="true"
+        :preview-modal="true"
+        :paginate-elements-by-height="1400"
+        filename="hee hee"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a4"
+        pdf-orientation="landscape"
+        pdf-content-width="800px"
+
+        @progress="onProgress($event)"
+        @hasStartedGeneration="hasStartedGeneration()"
+        @hasGenerated="hasGenerated($event)"
+        ref="html2Pdf"
+    >
+        <section slot="pdf-content">
+            <h2>print</h2>
+        </section>
+    </vue-html2pdf>
   <v-card>
     <v-card-title class="flex justify-between">
       <div class="right">
@@ -139,7 +162,7 @@
         fixed-header
         height="400px"
         sort-by="Name"
-        class="elevation-1"
+        class="elevation-1 "
       >
         <template v-slot:top>
           <div class="spacing-playground px-6">
@@ -168,7 +191,7 @@
             @cancel="cancel"
             @open="open"
           >
-            <span v-if="item.ItemHaveAntherUnit">{{ item.QntAntherUnit }}</span>
+            <span v-if="item.QntAntherUnit > 0">{{ item.QntAntherUnit }}</span>
             <span v-else>{{ item.Qnt }}</span>
             <template v-slot:input>
               <v-text-field
@@ -210,14 +233,25 @@
         <template v-slot:no-data>
           <span>{{$t('table.no_data')}}</span>
         </template>
+        <template v-slot:footer>
+          <base-btn
+                :classNames="['primary' , 'my-5']"
+                icon="mdi-printer-outline"
+                @clicked="print"
+                text="form.print"
+                :loading="insertLoading"
+              />
+        </template>
       </v-data-table>
     </v-card-text>
   </v-card>
+</div>
 </template>
 
 <script>
 import { addParamsToLocation } from '@/utils/helpers/Global.js'
 import { mapGetters } from 'vuex'
+import VueHtml2pdf from 'vue-html2pdf'
 export default {
   data() {
     return {
@@ -266,6 +300,9 @@ export default {
     })
   },
   methods: {
+    print(){
+      this.$refs.html2Pdf.generatePdf()
+    },
     deleteItem(Serial) {
       this.$store.dispatch('order/deleteItem', { Serial })
     },
@@ -485,6 +522,13 @@ export default {
       Serial,
       Reserved: false
     })
+      this.$store.commit('datatable/orderItemsDatatableItems' , [])
+      this.$store.commit('order/setTotals' , {
+        TotalCash: null,
+        TotalPackages: null
+    })
+      
+
   },
   created() {
     this.init()

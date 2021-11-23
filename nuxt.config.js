@@ -9,7 +9,7 @@ export default {
 
 
   env :{
-    apiUrl:"http://192.168.1.167:8586/api/",
+    apiUrl:"http://localhost:8586/api/",
     storeCode:1,
   },
   // Target: https://go.nuxtjs.dev/config-target
@@ -37,7 +37,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/bus.js'
+    '~/plugins/bus.js',
+    { src: '@/plugins/vue-html2pdf', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -138,9 +139,9 @@ export default {
         },
         
         endpoints: {   
-          login: { url: `http://192.168.1.167:8586/api/login`, method: `post` },
-          logout: { url: `http://192.168.1.167:8586/api/employee/logout`, method: `post` },
-          user: { url: `http://192.168.1.167:8586/api/employee`, method: `get` }
+          login: { url: `http://localhost:8586/api/login`, method: `post` },
+          logout: { url: `http://localhost:8586/api/employee/logout`, method: `post` },
+          user: { url: `http://localhost:8586/api/employee`, method: `get` }
         }
       }
     }

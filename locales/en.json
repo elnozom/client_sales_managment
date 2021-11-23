@@ -48,6 +48,7 @@
     "hide_none_required": "hide none required fields",
     "submit" : "submit", 
     "login" : "login",
+    "print" : "print",
     "errors" :{
       "password_didnt_match" : "password didn't match"
     }
