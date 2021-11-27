@@ -28,6 +28,11 @@ export default {
         })
     },
     methods: {
+        showStock(){
+            console.log("asd")
+            console.log("asd")
+            console.log("asd")
+        },
         save(item, type) {
             this.snack = true
             this.snackColor = 'success'

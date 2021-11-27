@@ -2,6 +2,8 @@
 import Http from "@/utils/Http.js"
 import {serializeQuery} from '@/utils/helpers/Global.js'
 export const state = () => ({
+    stockItems: [],
+    stockLoading: false,
     orderItemsDatatable: {
         items: [],
         loading: false,
@@ -11,9 +13,17 @@ export const state = () => ({
 
 export const getters = {
     orderItemsDatatable: state => state.orderItemsDatatable,
+    stockItems: state => state.stockItems,
+    stockLoading: state => state.stockLoading,
 }
 
 export const mutations = {
+    stockItems(state, payload) {
+        state.stockItems = payload
+    },
+    stockLoading(state, payload) {
+        state.stockLoading = payload
+    },
     orderItemsDatatableItems(state, payload) {
         state.orderItemsDatatable.items = payload
     },
@@ -68,6 +78,22 @@ export const actions = {
             })
             .catch(err => {
                 commit('orderItemsLoading' , false)
+                reject(err)
+            })
+        });
+    },
+    // stockItems,stockLoading
+    getStock({commit} , serial){
+        commit('stockLoading' , true)
+        return new Promise((resolve , reject) => {
+            Http.get(`item/balnace/${serial}`)
+            .then(res => {
+                commit('stockItems' , res.data)
+                commit('stockLoading' , false)
+                resolve(res.data)
+            })
+            .catch(err => {
+                commit('stockLoading' , false)
                 reject(err)
             })
         });

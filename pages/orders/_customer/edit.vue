@@ -29,7 +29,7 @@
         <p class="block">{{$t('employee')}} : {{$auth.user.EmpCode}} / {{$auth.user.EmpName}}</p>
       </div>
       <div class="middle">
-        <p class="block">{{$t('order_number')}} : 1548</p>
+        <p class="block">{{$t('order_number')}} : {{docNo}}</p>
         <p class="block">{{$t('date')}} : {{new Date().toISOString().slice(0, 10)}}</p>
       </div>
       <div
@@ -185,23 +185,7 @@
 
         </template>
 
-        <template v-slot:[`item.Qnt`]="{ item }">
-          <v-edit-dialog
-            @save="updateQnt(item)"
-            @cancel="cancel"
-            @open="open"
-          >
-            <span v-if="item.QntAntherUnit > 0">{{ item.QntAntherUnit }}</span>
-            <span v-else>{{ item.Qnt }}</span>
-            <template v-slot:input>
-              <v-text-field
-                v-model="newQnt"
-                :label="$t('inputs.edit')"
-                single-line
-              ></v-text-field>
-            </template>
-          </v-edit-dialog>
-        </template>
+        
         <template v-slot:[`item.Price`]="{ item }">
           <v-edit-dialog
             @save="updatePrice(item)"
@@ -254,12 +238,14 @@ import { mapGetters } from 'vuex'
 import VueHtml2pdf from 'vue-html2pdf'
 export default {
   data() {
+   
     return {
       snack: false,
       search: '',
       priceErr: null,
       newQnt: '',
       newPrice: '',
+      docNo:'',
       currentUserIsCreator: false,
       insertLoading: false,
       valid: false,
@@ -271,15 +257,6 @@ export default {
         (v) => {
           if (!v || isNaN(v) || v < 1) return this.$t('validations.min1')
         }
-      ],
-
-      headers: [
-        { text: this.$t('columns.code'), value: 'BarCode', align: 'center' },
-        { text: this.$t('columns.name'), value: 'ItemName', align: 'center' },
-        { text: this.$t('columns.price'), value: 'Price', align: 'center' },
-        { text: this.$t('columns.qnt'), value: 'Qnt', align: 'center' },
-        { text: this.$t('columns.total'), value: 'Total', align: 'center' },
-        { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
       ],
       priceHint: '',
       form: {
@@ -297,7 +274,29 @@ export default {
       serial: 'order/serial',
       itemsLoaging: 'item/loading',
       deleteLoading: 'order/loading'
-    })
+    }),
+    headers(){
+       let headers1 = [
+      { text: this.$t('columns.code'), value: 'BarCode', align: 'center' },
+      { text: this.$t('columns.name'), value: 'ItemName', align: 'center' },
+      { text: this.$t('columns.price'), value: 'Price', align: 'center' },
+    ]
+    const attach = [
+        { text: this.$t('columns.qnt'), value: 'Qnt', align: 'center' },
+        { text: this.$t('columns.AnQnt'), value: 'QntAntherUnit', align: 'center' },
+        { text: this.$t('columns.AvgWeight'), value: 'AvgWeight', align: 'center' },
+    ]
+    const header2 = [
+       { text: this.$t('columns.total'), value: 'Total', align: 'center' },
+        { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
+    ]
+    if(this.$auth.user.SecLevel >= 4) {
+       headers1 = headers1.concat(attach)
+    }
+    const headers = headers1.concat(header2)
+
+    return headers
+    }
   },
   methods: {
     print(){
@@ -390,10 +389,12 @@ export default {
       this.$refs[input].focus()
     },
     async insertOrder(form) {
-      await this.$store.dispatch('order/create', form).then((serial) => {
+      await this.$store.dispatch('order/create', form).then((d) => {
         this.currentUserIsCreator = true
+        this.docNo = d.No
         const newQuery = Object.assign({}, this.$route.query, {
-          serial,
+          serial: d.Serial,
+          no: d.No,
           EmpCode: this.$auth.user.EmpCode
         })
         // set order number on the url
@@ -402,12 +403,14 @@ export default {
     },
     insertOrderItem(form) {
       this.$store.dispatch('order/insertItem', form).then((res) => {
-        const total = parseFloat(this.form.price) * parseFloat(this.form.qnt)
+        const total = this.form.item.ItemHaveAntherUnit ?  parseFloat(this.form.price) * parseFloat(this.form.qnt) * this.form.item.AvrWeight : parseFloat(this.form.price) * parseFloat(this.form.qnt)
         const item = {
           Serial: res.Serial,
           BarCode: this.form.item.Code,
           ItemName: this.form.item.Name,
           Qnt: form.Qnt,
+          QntAntherUnit: form.Qnt * this.form.item.AvrWeight,
+          AvgWeight:  this.form.item.AvrWeight,
           QntAntherUnit: form.QntAntherUnit || 0,
           Price: parseFloat(this.form.price),
           PriceMax: form.PriceMax,
@@ -437,6 +440,7 @@ export default {
     init() {
       this.$store.dispatch('global/getCustomer', this.$route.params.customer)
       this.$store.dispatch('item/get', {})
+      this.docNo = this.$route.query.no
       if (this.$route.query.serial) {
         this.$store.dispatch('datatable/getOrderItems', {
           serial: this.$route.query.serial

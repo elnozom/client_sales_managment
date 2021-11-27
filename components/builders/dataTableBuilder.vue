@@ -113,6 +113,7 @@
         </div>
 
       </template>
+
       <template v-slot:[`item.LimitedQnt`]="{ item }">
         <v-chip
           @dblclick="update({Serial : item.Serial, LQvalue: false})"
@@ -261,11 +262,12 @@
         <v-btn
           v-if="opts.viewable"
           @click="viewItem(item)"
+          color="warning"
           class="mr-4 mb-0"
         >
           <v-icon
             small
-            class="mr-2"
+            class="mx-2"
           >
             mdi-eye
           </v-icon>

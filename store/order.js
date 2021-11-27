@@ -82,7 +82,7 @@ export const actions = {
             Http.post(`orders`, payload)
                 .then(res => {
                     resolve(res.data)
-                    commit('serial', res.data)
+                    commit('serial', res.data.Serial)
                     commit('loading', false)
 
                 })

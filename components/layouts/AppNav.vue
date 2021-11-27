@@ -104,9 +104,12 @@ export default {
       switchLanguage(locale, this)
     },
     logout() {
-      localStorage.removeItem('auth._token.local')
-      localStorage.removeItem('auth._token.local')
-        this.$router.push('/login')
+      this.$store.dispatch('myAuth/unReserve').then(() => {
+        localStorage.removeItem('auth._token.local')
+        localStorage.removeItem('auth._token.local')
+          this.$router.push('/login')
+
+      })
       
     }
   }

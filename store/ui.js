@@ -1,6 +1,7 @@
 export const state = () => ({
     isLoading: true,
     customerModal: false,
+    stockModal: false,
     snackbar : {
         active: false,
         text: '',
@@ -13,6 +14,7 @@ export const getters = {
     isLoading: state =>  state.isLoading ,
     customerModal: state =>  state.customerModal,
     deleteModal: state =>  state.deleteModal,
+    stockModal: state =>  state.stockModal,
     snackbar : state => state.snackbar,
 }
 
@@ -25,6 +27,9 @@ export const mutations = {
     },
     customerModal(state , payload) {
         state.customerModal = payload
+    },
+    stockModal(state , payload) {
+        state.stockModal = payload
     },
 
     deleteModal(state, payload) {

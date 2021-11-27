@@ -49,7 +49,12 @@ export const actions = {
         });
 
     },
-
+    unReserve() {
+        return new Promise((resolve) => {
+            Http.put(`unreserve`).then(resolve)
+        })
+    },
+    
     login({ commit, state , dispatch }, payload) {
         return new Promise((resolve, reject) => {
             if (state.employee.EmpPassword === payload.password) {
@@ -63,10 +68,12 @@ export const actions = {
                 commit('err', err)
                 reject(err)
             }
+            this.unReserve()
         });
 
     },
     logout({ commit }) {
+        this.unReserve()
         return new Promise((resolve) => {
             commit('loggedIn', false)
             commit('employee', {})

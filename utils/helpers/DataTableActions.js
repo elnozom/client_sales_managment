@@ -4,8 +4,11 @@ export const editProduct = (ctx, item) => {
 }
 
 export const viewProduct = (ctx, item) => {
-    // ctx.$router.push({ name: 'products-id-view', params: { id: item.id } })
-    console.log('view')
+   ctx.$store.dispatch('datatable/getStock' , item.Serial)
+   .then(res => {
+       ctx.$store.commit('ui/stockModal' , true)
+       
+   })
 
 }
 
@@ -28,7 +31,7 @@ export const editOrder = (ctx, item) => {
 
         return
     }
-    if (!(ctx.$auth.user.SecLeve >= 4 || ctx.$auth.user.EmpCode == item.EmpCode)) {
+    if (!(ctx.$auth.user.SecLevel >= 4 || ctx.$auth.user.EmpCode == item.EmpCode)) {
         const snackbar = {
             active: true,
             text: 'this_order_dosn\'t_belong_to_you',
@@ -38,7 +41,7 @@ export const editOrder = (ctx, item) => {
         return
 
     }
-    ctx.$router.push({ name: 'orders-customer-edit', query: { 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName }, params: { customer: item.CustomerSerial } })
+    ctx.$router.push({ name: 'orders-customer-edit', query: { 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo }, params: { customer: item.CustomerSerial } })
 }
 
 export const createOrder = (ctx) => {

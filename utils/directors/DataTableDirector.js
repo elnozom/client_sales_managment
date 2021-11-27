@@ -9,13 +9,18 @@ export default class DatatableDirector {
             // { text: this.t.$t(this.ctx.$t('columns.codeasdasd')), value: 'code', align: "center" },
             { text: this.ctx.$t('columns.code'), value: 'Code', align: "center" },
             { text: this.ctx.$t('columns.name'), value: 'Name', align: "center" },
-            { text: this.ctx.$t('columns.weight'), value: 'Qnt', align: "center" },
+          
+            
             // { text: this.ctx.$t('columns.weight'), value: 'qty', align: "center" },
             
             // { text: this.ctx.$t('columns.price_range'), value: 'price_range', align: "center" },
             // { text: this.ctx.$t('columns.note'), value: 'note', align: "center" },
             // { text: this.ctx.$t('columns.limited'), value: 'note', align: "center" },
             // { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
+        ]
+        let attachHeader = [
+            { text: this.ctx.$t('columns.weight'), value: 'Qnt', align: "center" },
+            { text: this.ctx.$t('columns.AnQnt'), value: 'AnQnt', align: "center" },
         ]
 
         const headers2 = [
@@ -24,13 +29,15 @@ export default class DatatableDirector {
             { text: this.ctx.$t('columns.max_price'), value: 'PMax', align: "center" },
             { text: this.ctx.$t('columns.limited'), value: 'LimitedQnt', align: "center" },
             { text: this.ctx.$t('columns.stop_sale'), value: 'StopSale', align: "center" },
+            { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
         ]
 
-        // //check permissions to show stock
-        // this.ctx.$store.state.auth.employee.EmpName === 'Admin' 
-        //     ? headers1.push({ text: this.ctx.$t('columns.qnt'), value: 'AnQnt', align: "center" })
-        // : ''
-
+        //check permissions to show stock
+       if( this.ctx.$auth.user.SecLevel >= 4){
+           console.log(this.ctx.$auth.user)
+        headers1= headers1.concat(attachHeader)
+       }
+        
         
 
 
@@ -38,14 +45,14 @@ export default class DatatableDirector {
         return this.builder
             .setTitle('products')
             .setUrl('items')
-            .setEdit(editProduct)
+            .setEditable(false)
             .setViewable(true)
             .setView(viewProduct)
             .setTable('products')
             .setHeaders(headers)
             .build()
     }
-
+    
     makeOrderProducts() {
         let headers = [
             // { text: this.t.$t(this.ctx.$t('columns.codeasdasd')), value: 'code', align: "center" },
