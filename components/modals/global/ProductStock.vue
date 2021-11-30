@@ -2,7 +2,8 @@
 <template>
   <v-dialog
     v-model="active"
-    max-width="700px"
+    class="balance"
+    max-width="900px"
   >
     <v-card class='mt-6'>
     <v-data-table
@@ -25,7 +26,11 @@ export default {
             { text: this.$t('columns.code'), value: 'StoreCode', align: "center" },
             { text: this.$t('columns.name'), value: 'StoreName', align: "center" },
             { text: this.$t('columns.qnt'), value: 'Raseed', align: "center" },
+            { text: this.$t('columns.qntReserved'), value: 'RaseedReserved', align: "center" },
+            { text: this.$t('columns.qntNet'), value: 'RaseedNet', align: "center" },
             { text: this.$t('columns.AnQnt'), value: 'AnRaseed', align: "center" },
+            { text: this.$t('columns.AnQntReserved'), value: 'AnRaseedReserved', align: "center" },
+            { text: this.$t('columns.AnQntNet'), value: 'AnRaseedNet', align: "center" },
         ],
    }
   },
@@ -48,3 +53,9 @@ export default {
  
 }
 </script>
+
+<style>
+.v-data-table-header{
+  background: var(--main-gredient) !important;
+}
+</style>

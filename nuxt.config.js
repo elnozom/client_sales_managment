@@ -38,7 +38,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/bus.js',
-    { src: '@/plugins/vue-html2pdf', mode: 'client' }
+    '~/plugins/html2paper.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -70,8 +70,8 @@ export default {
   ],
 
   server :{
-    host: "192.168.1.40",
-    port: "8081"
+    port: "8081",
+    host: "192.168.1.40"
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules

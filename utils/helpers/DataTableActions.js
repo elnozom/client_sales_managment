@@ -41,7 +41,7 @@ export const editOrder = (ctx, item) => {
         return
 
     }
-    ctx.$router.push({ name: 'orders-customer-edit', query: { 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo }, params: { customer: item.CustomerSerial } })
+    ctx.$router.push({ name: 'orders-customer-edit', query: { 'date' :item.DocDate, 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo }, params: { customer: item.CustomerSerial } })
 }
 
 export const createOrder = (ctx) => {

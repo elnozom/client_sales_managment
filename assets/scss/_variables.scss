@@ -1,7 +1,7 @@
 :root {
-    --bg-gredient: linear-gradient(45deg, #0089bbcc, #004674);
+    --bg-gredient: linear-gradient(45deg, hsla(196, 100%, 37%, 0.8), hsl(204, 100%, 23%));
     --color-boxshadow: 3px 3px 20px 0 rgba(33, 98, 182, 0.5);
-    --main-gredient: linear-gradient(45deg, #0088BB, #004674);
+    --main-gredient: linear-gradient(45deg, hsl(196, 100%, 37%), hsl(204, 100%, 23%));
     --sidebar-with: 250px;
     --sidebar-variant-with:60px;
     --primary-transition:all .3s ease-out;

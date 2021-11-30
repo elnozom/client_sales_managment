@@ -165,7 +165,6 @@ export const actions = {
     },
     
     updateOrderReserved({ commit }, payload) {
-        console.log("asd")
         commit('loading', true)
         return new Promise((resolve, reject) => {
             Http.post(`orders/reserve`, payload)

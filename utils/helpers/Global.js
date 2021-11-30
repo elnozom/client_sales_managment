@@ -75,3 +75,5 @@ export const removeFromArrayByVal = (item, array) => {
 export const slugify = title => {
   return title
 }
+
+

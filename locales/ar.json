@@ -68,6 +68,8 @@
     "item":"ادخل المنتج",
     "edit" : "تعديل",
     "price":"السعر",
+    "store":"ادخل الفرع",
+    
     "code":"الكود",
     "password":"كلمة السر"
   },
@@ -86,13 +88,16 @@
   },
   "columns": {
     "code": "الكود",
-    "delete" : "حذف",
     "employee": "الموظف",
     "totla": "الاجمالي",
     "docNo": "رقم الطلب",
     "docDate": "التاريخ",
     "reserved" : "الحالة",
-    
+    "qntReserved":"الكمية المحجوزة",
+    "store":" الفرع",
+    "qntNet":"صافي الكمية",
+    "AnQntReserved":"العبوات المحجوزة",
+    "AnQntNet":"صافي العبوات",
     "empName": "اسم الموظف",
     "empCode": "كود الموظف",
     "totalCash": "الاجمالي",
@@ -106,6 +111,8 @@
     "actions": "الاجرائات",
     "weight":"الوزن",
     "select_product" :"من فضلك قم باختيار المنتج",
+    "select_store":"من فضلك قم باختيار الفرع",
+
     "limited":"محدود",
     "max_price":"اعلي سعر",
     "min_price":"اقل سعر",

@@ -1,36 +1,14 @@
 <template>
 <div class="printme">
-  <vue-html2pdf
-        :show-layout="false"
-        :float-layout="true"
-        :enable-download="true"
-        :preview-modal="true"
-        :paginate-elements-by-height="1400"
-        filename="hee hee"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a4"
-        pdf-orientation="landscape"
-        pdf-content-width="800px"
-
-        @progress="onProgress($event)"
-        @hasStartedGeneration="hasStartedGeneration()"
-        @hasGenerated="hasGenerated($event)"
-        ref="html2Pdf"
-    >
-        <section slot="pdf-content">
-            <h2>print</h2>
-        </section>
-    </vue-html2pdf>
   <v-card>
-    <v-card-title class="flex justify-between">
+    <v-card-title class="flex justify-space-between">
       <div class="right">
         <p class="block">{{$t('customer')}} :{{$route.query.customer_name}} / {{this.$route.query.customer_code}} </p>
         <p class="block">{{$t('employee')}} : {{$auth.user.EmpCode}} / {{$auth.user.EmpName}}</p>
       </div>
       <div class="middle">
         <p class="block">{{$t('order_number')}} : {{docNo}}</p>
-        <p class="block">{{$t('date')}} : {{new Date().toISOString().slice(0, 10)}}</p>
+        <p class="block">{{$t('date')}} : {{docDate}}</p>
       </div>
       <div
         class="left"
@@ -92,7 +70,7 @@
               type="number"
               :rules="qntRules"
               :label="$t(`inputs.qnt`)"
-              @keyup.enter="goToPrice()"
+              @keyup.enter="qntChanged()"
             ></v-text-field>
 
           </v-col>
@@ -109,12 +87,36 @@
               :rules="rules"
               :messages="priceHint"
               :label="$t(`inputs.price`)"
-              @keyup.enter="submit"
+              @keyup.enter="goTo('store')"
             ></v-text-field>
             <span v-if="priceErr != null">{{$t(priceErr)}}</span>
 
           </v-col>
-          <v-col :cols="3">
+          <v-col
+            class="text-center mb-8"
+            :cols="3"
+          >
+            <div class="combobox">
+              <v-combobox
+                prepend-icon="mdi-home-outline"
+                v-model="form.store"
+                ref="store"
+                :items="stores"
+                :rules="rules"
+                :loading="storesLoading"
+                clearable
+                item-text="StoreName"
+                @change="submit"
+                return-object
+                :label="$t(`inputs.store`)"
+              ></v-combobox>
+              <span v-if="selectStore">{{$t('select_store')}}</span>
+
+              <!-- <v-icon @click.prevent="createAuthor" >mdi-plus</v-icon> -->
+            </div>
+
+          </v-col>
+          <v-col :cols="12">
             <base-btn
               :classNames="['primary' , 'mt-5']"
               icon="mdi-content-save-all-outline"
@@ -167,7 +169,6 @@
         <template v-slot:top>
           <div class="spacing-playground px-6">
             <v-row>
-
               <v-col cols="8">
                 <v-text-field
                   v-model="search"
@@ -178,9 +179,7 @@
                 >
                 </v-text-field>
               </v-col>
-
             </v-row>
-
           </div>
 
         </template>
@@ -201,6 +200,29 @@
                 :messages=" `${$t('from')} : ${item.PriceMin} ${$t('to')} : ${item.PriceMax}`"
                 single-line
               ></v-text-field>
+            </template>
+          </v-edit-dialog>
+        </template>
+        <template v-slot:[`item.StoreName`]="{ item }">
+          <v-edit-dialog
+            @save="updateStore(item)"
+            @cancel="cancel"
+            @open="openStore(item)"
+          >
+            {{ item.StoreName }}
+            <template v-slot:input>
+             <v-combobox
+                prepend-icon="mdi-home-outline"
+                v-model="updatedStore"
+                ref="store"
+                :items="updateStores"
+                :loading="updateStoresLoading"
+                clearable
+                item-text="StoreName"
+                @change="updateStore(item)"
+                return-object
+                :label="$t(`inputs.store`)"
+              ></v-combobox>
             </template>
           </v-edit-dialog>
         </template>
@@ -229,19 +251,98 @@
       </v-data-table>
     </v-card-text>
   </v-card>
+  <div class="invoice"  id="print" ref="invoice">
+
+  <v-card :light="true" flat>
+    <v-card-title>
+      <div class="d-flex w-full justify-space-between">
+        <p class="invoice__no">
+          رقم : #{{docNo}}
+        </p>
+        <p class="invoice__no">
+          التاريخ : {{docDate}}
+        </p>
+      </div>
+    </v-card-title>
+    <v-card-subtitle class="my-12">
+      <div class="d-flex w-full justify-space-between">
+        <div class="">
+          <h2 class="mb-4">امر بيع</h2>
+          <p class="block">العميل :{{$route.query.customer_name}} / {{this.$route.query.customer_code}} </p>
+
+        </div>
+        <img style="height : 60px" src="~/assets/img/logo.png" alt="">
+      </div>
+      <div class="divider"></div>
+    </v-card-subtitle>
+    <v-card-text>
+      <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-right">
+            كود الصنف
+          </th>
+           <th class="text-right">
+            اسم الصنف
+          </th>
+          <th class="text-right">
+            السعر
+          </th>
+          <th class="text-right">
+           الكمية
+          </th>
+           <th class="text-right">
+           الكمية بالكرتونة
+          </th>
+          <th class="text-right">
+           الاجمالي
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="item in datatable.items"
+          :key="item.Name"
+        >
+          <td class="text-right">{{ item.BarCode }}</td>
+          <td class="text-right">{{ item.ItemName }}</td>
+          <td class="text-right">{{ item.Price }}</td>
+          <td class="text-right">{{ item.Qnt }}</td>
+          <td class="text-right">{{ item.QntAntherUnit }}</td>
+          <td class="text-right">{{ item.Total }}</td>
+        </tr>
+        <tr
+        >
+          <td class="text-right" colspan="5"></td>
+          <td class="text-right totlas">
+            <div>اجمالي العبوات : {{totals.TotalPackages}}</div>
+            <div>الاجمالي : EGP{{totals.TotalCash}}</div>
+          </td>
+         
+         
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+    </v-card-text>
+  </v-card>
+  
+  </div>
+
 </div>
 </template>
 
 <script>
 import { addParamsToLocation } from '@/utils/helpers/Global.js'
 import { mapGetters } from 'vuex'
-import VueHtml2pdf from 'vue-html2pdf'
 export default {
   data() {
-   
+  let docDate = new Date().toLocaleString();
     return {
       snack: false,
       search: '',
+      docDate,
       priceErr: null,
       newQnt: '',
       newPrice: '',
@@ -252,6 +353,12 @@ export default {
       error: '',
       errors: [],
       selectProduct: false,
+      selectStore: false,
+      stores:[],
+      updatedStore:null,
+      updateStoresLoading:false,
+      updateStores:[],
+
       rules: [(v) => !!v || this.$t('validations.required')],
       qntRules: [
         (v) => {
@@ -259,9 +366,11 @@ export default {
         }
       ],
       priceHint: '',
+      storesLoading:false,
       form: {
         item: '',
         qnt: '',
+        store:'',
         price: ''
       }
     }
@@ -287,8 +396,9 @@ export default {
         { text: this.$t('columns.AvgWeight'), value: 'AvgWeight', align: 'center' },
     ]
     const header2 = [
+       { text: this.$t('columns.store'), value: 'StoreName', align: 'center' },
        { text: this.$t('columns.total'), value: 'Total', align: 'center' },
-        { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
+      { text: this.$t('columns.delete'), value: 'delete', align: 'center' }
     ]
     if(this.$auth.user.SecLevel >= 4) {
        headers1 = headers1.concat(attach)
@@ -299,8 +409,55 @@ export default {
     }
   },
   methods: {
-    print(){
-      this.$refs.html2Pdf.generatePdf()
+    async print(){
+     
+   const prtHtml = document.getElementById('print').innerHTML;
+
+      // Get all stylesheets HTML
+      let stylesHtml = '';
+      for (const node of [...document.querySelectorAll('link[rel="stylesheet"], style')]) {
+        stylesHtml += node.outerHTML;
+      }
+      // Open the print window
+      const WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+
+      WinPrint.document.write(`<!DOCTYPE html>
+      <html>
+    
+          <head>
+            ${stylesHtml}
+            <style>
+              .invoice{
+                display:flex !important;
+                
+              }
+              .v-application{
+                display:flex !important;
+                justify-content:center !important
+              }
+            </style>
+          </head>
+        <body>
+        <div data-app="true" class="v-application relative v-application--is-rtl theme--light" id="app">
+          ${prtHtml}
+          </div>
+        </body>
+      </html>`);
+      WinPrint.document.close();
+      WinPrint.focus();
+      setTimeout(() => {
+        WinPrint.print();
+        WinPrint.close();
+        
+      }, 100);
+    },
+    openStore(item){
+      this.updateStoresLoading = true
+      console.log(item)
+      this.$store.dispatch('global/getStoresQnt' , {item:item.ItemSerial , qnt:item.QntAntherUnit}).then(d => {
+        this.updateStores = d
+        this.updateStoresLoading = false
+      })
     },
     deleteItem(Serial) {
       this.$store.dispatch('order/deleteItem', { Serial })
@@ -313,6 +470,7 @@ export default {
     },
 
     updatePrice(item) {
+      console.log(item)
       const newPrice = parseFloat(this.newPrice)
       const priceErr = this.validatePrice(
         newPrice,
@@ -331,9 +489,12 @@ export default {
       const payload = {
         Qnt: item.Qnt,
         Price: parseFloat(this.newPrice),
+        Branch: item.StoreCode,
         Serial: item.Serial
       }
-      this.update(payload)
+      this.update(payload).then(() => {
+        this.newPrice = ""
+      })
     },
     updateQnt(item) {
       const payload = item.ItemHaveAntherUnit
@@ -348,6 +509,18 @@ export default {
             Serial: item.Serial
           }
       this.update(payload)
+    },
+    updateStore(item){
+       const payload = {
+        Qnt: item.Qnt,
+        Price: item.Price,
+        Branch: this.updatedStore.StoreCode,
+        Serial: item.Serial
+      }
+      this.update(payload).then(() => {
+        this.updatedStore = ""
+        this.updateStores = []
+      })
     },
     save() {
       const Serial = parseInt(this.$route.query.serial) || this.serial
@@ -408,6 +581,7 @@ export default {
           Serial: res.Serial,
           BarCode: this.form.item.Code,
           ItemName: this.form.item.Name,
+          ItemSerial: this.form.item.Serial,
           Qnt: form.Qnt,
           QntAntherUnit: form.Qnt * this.form.item.AvrWeight,
           AvgWeight:  this.form.item.AvrWeight,
@@ -415,8 +589,10 @@ export default {
           Price: parseFloat(this.form.price),
           PriceMax: form.PriceMax,
           PriceMin: form.PriceMin,
-          Total: total
+          Total: total,
+          Branch:this.form.store.StoreCode
         }
+        console.log(item)
         this.$store.commit('datatable/prependOrderItemsDatatable', item)
         this.reset()
       })
@@ -441,6 +617,7 @@ export default {
       this.$store.dispatch('global/getCustomer', this.$route.params.customer)
       this.$store.dispatch('item/get', {})
       this.docNo = this.$route.query.no
+      if(this.$route.query.date) this.docDate = this.$route.query.date
       if (this.$route.query.serial) {
         this.$store.dispatch('datatable/getOrderItems', {
           serial: this.$route.query.serial
@@ -454,6 +631,14 @@ export default {
     },
     goToPrice(){
       if(this.form.qnt != '' && this.form.qnt != null  ) this.goTo('price') 
+    },
+    qntChanged(){
+      this.storesLoading = true
+      this.$store.dispatch('global/getStoresQnt' , {item:this.form.item.Serial , qnt:this.form.qnt}).then(d => {
+        this.stores = d
+        this.storesLoading = false
+      })
+      this.goToPrice()
     },
     async submit() {
       await this.$refs.form.validate()
@@ -498,7 +683,8 @@ export default {
         Price: parseFloat(this.form.price),
         PriceMax: parseFloat(this.form.item.PMax),
         PriceMin: parseFloat(this.form.item.PMin),
-        MinorPerMajor: parseFloat(this.form.item.MinorPerMajor)
+        MinorPerMajor: parseFloat(this.form.item.MinorPerMajor),
+        Branch:this.form.store.StoreCode
       }
 
       if (this.form.item.ItemHaveAntherUnit) {
@@ -521,11 +707,8 @@ export default {
     }
   },
   async beforeDestroy() {
-    const Serial = parseInt(this.$route.query.serial) || this.serial
-    this.$store.dispatch('order/updateOrderReserved', {
-      Serial,
-      Reserved: false
-    })
+   
+    this.$store.dispatch('myAuth/unReserve')
       this.$store.commit('datatable/orderItemsDatatableItems' , [])
       this.$store.commit('order/setTotals' , {
         TotalCash: null,

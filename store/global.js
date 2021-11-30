@@ -30,4 +30,15 @@ export const actions = {
         });
 
     },
+    getStoresQnt({} , payload){
+        return new Promise((resolve , reject) => {
+            Http.get(`item/balnace/${payload.item}?qnt=${payload.qnt}`)
+            .then(res => {
+                res.data == null ? resolve([]) : resolve(res.data)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        });
+    },
 }

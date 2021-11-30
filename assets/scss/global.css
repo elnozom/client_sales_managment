@@ -1,12 +1,12 @@
 :root {
-  --bg-gredient: linear-gradient(45deg, #0089bbcc, #004674);
+  --bg-gredient: linear-gradient(45deg, rgba(0, 138, 189, 0.8), #004675);
   --color-boxshadow: 3px 3px 20px 0 rgba(33, 98, 182, 0.5);
-  --main-gredient: linear-gradient(45deg, #0088BB, #004674);
+  --main-gredient: linear-gradient(45deg, #008abd, #004675);
   --sidebar-with: 250px;
-  --sidebar-variant-with:60px;
-  --primary-transition:all .3s ease-out;
-  --app-bar-h:64px;
-  --md-app-bar-h:56px;
+  --sidebar-variant-with: 60px;
+  --primary-transition: all .3s ease-out;
+  --app-bar-h: 64px;
+  --md-app-bar-h: 56px;
 }
 
 .w-full {
@@ -272,5 +272,29 @@
 
 .v-application--is-rtl .v-list-item--active:before {
   border-radius: 5px 0 0 5px !important;
+}
+
+.invoice {
+  display: none;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.invoice img {
+  height: 60px;
+}
+
+.invoice .divider {
+  height: 1px;
+  margin: 30px 0;
+  background-color: #e0e0e0;
+}
+
+.invoice .totlas div {
+  margin-top: 10px;
 }
 /*# sourceMappingURL=global.css.map */

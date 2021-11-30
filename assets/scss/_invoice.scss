@@ -1,0 +1,22 @@
+.invoice{
+    
+   
+    display: none;
+    justify-content: center;
+    align-items: center;
+    
+    & img{
+       height: 60px;
+    }
+
+    & .divider{
+        height: 1px;
+        margin: 30px 0;
+        background-color: #e0e0e0;
+    }
+    & .totlas{
+        & div{
+            margin-top: 10px;
+        }
+    }
+}

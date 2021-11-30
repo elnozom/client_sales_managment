@@ -17,6 +17,7 @@ export const login = async (ctx, input) => {
             .then(() => {
                 ctx.loading = false
                 clearErr(ctx)
+                ctx.$store.dispatch('myAuth/unReserve')
                 ctx.$router.push('/')
             }).catch(e => {
                 console.log(e.response.data)

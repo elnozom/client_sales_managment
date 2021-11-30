@@ -23,19 +23,20 @@ export default class DatatableDirector {
             { text: this.ctx.$t('columns.AnQnt'), value: 'AnQnt', align: "center" },
         ]
 
-        const headers2 = [
+        let headers2 = [
             { text: this.ctx.$t('columns.price'), value: 'Price', align: "center" },
             { text: this.ctx.$t('columns.min_price'), value: 'PMin', align: "center" },
             { text: this.ctx.$t('columns.max_price'), value: 'PMax', align: "center" },
             { text: this.ctx.$t('columns.limited'), value: 'LimitedQnt', align: "center" },
             { text: this.ctx.$t('columns.stop_sale'), value: 'StopSale', align: "center" },
-            { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
+            
         ]
 
         //check permissions to show stock
        if( this.ctx.$auth.user.SecLevel >= 4){
            console.log(this.ctx.$auth.user)
         headers1= headers1.concat(attachHeader)
+        headers2.push({ text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" })
        }
         
         
