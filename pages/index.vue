@@ -15,7 +15,10 @@
 import DatatableBuilder from '@/utils/builders/DataTableBuilder.js'
 import DatatableDirector from '@/utils/directors/DataTableDirector.js'
 import {checkLoggedIn} from '@/utils/helpers/Global.js'
+import items from '@/utils/Sidebar.js'
+
 export default {
+  name:"produts",
   data() {
     const opts = new DatatableDirector(
       new DatatableBuilder(),
@@ -24,7 +27,8 @@ export default {
     // // const opts = new DatatableDirector(DatatableBuilder()).makeDocuments()
 
     return {
-      opts
+      opts,
+      items
     }
   },
   methods:{
@@ -34,6 +38,16 @@ export default {
   },
   created(){
     checkLoggedIn(this)
+    if(this.$auth.user.FixEmpStore != 0){
+        this.items = items.filter(item => {
+          return item.to === '/orders' ? null : item
+          })
+          } else {
+            this.items = items.filter(item => {
+            return item.to == '/stock' ? null : item
+          })
+
+        }
   }
 }
 </script>

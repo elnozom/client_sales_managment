@@ -4,6 +4,11 @@ import {serializeQuery} from '@/utils/helpers/Global.js'
 export const state = () => ({
     stockItems: [],
     stockLoading: false,
+    stcOrderItemsDatatable:{
+        items: [],
+        loading: false,
+        search: '',
+    },
     orderItemsDatatable: {
         items: [],
         loading: false,
@@ -15,6 +20,7 @@ export const getters = {
     orderItemsDatatable: state => state.orderItemsDatatable,
     stockItems: state => state.stockItems,
     stockLoading: state => state.stockLoading,
+    stcOrderItemsDatatable: state => state.stcOrderItemsDatatable,
 }
 
 export const mutations = {
@@ -54,6 +60,9 @@ export const mutations = {
             }
         }
     },
+    stcOrderItemsDatatable(state, payload) {
+        state.stcOrderItemsDatatable.items = payload
+    },
     reset(state) {
         state.orderItemsDatatable = {
             items: [],
@@ -65,7 +74,22 @@ export const mutations = {
 
 export const actions = {
     
-    getOrderItems({commit , dispatch} , payload){
+    getStcOrderItems({commit } , payload){
+        commit('orderItemsLoading' , true)
+        return new Promise((resolve , reject) => {
+            Http.get(`orders/store/${payload.serial}`)
+            .then(res => {
+                commit('stcOrderItemsDatatable' , res.data)
+                commit('orderItemsLoading' , false)
+                resolve(res.data)
+            })
+            .catch(err => {
+                commit('orderItemsLoading' , false)
+                reject(err)
+            })
+        });
+    },
+    getOrderItems({commit } , payload){
         commit('orderItemsLoading' , true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
         return new Promise((resolve , reject) => {

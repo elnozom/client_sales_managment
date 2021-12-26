@@ -87,3 +87,12 @@ export const price = {
     label : 'price',
     rules : [required ],
 }
+
+export const SalesOrderNo = {
+    type : "text",
+    inputType : "number",
+    prop : "SalesOrderNo",
+    ref : "SalesOrderNo",
+    label : 'SalesOrderNo',
+}
+

@@ -25,6 +25,7 @@ export const  min0 = v  => {
     if(v && v < 0){
         return 'min0'
     }
+    return true
 }
 export const  max = (v , max) => {
     if(v && v > max){

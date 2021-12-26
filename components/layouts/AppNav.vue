@@ -51,9 +51,14 @@
       />
       <!-- <v-toolbar-title v-text="'El Nozom'" /> -->
       <v-spacer />
-        <v-icon class="pointer" color="white" @click.prevent="$store.commit('ui/customerModal' , true)" left>
-          mdi-plus
-        </v-icon>
+      <v-icon
+        class="pointer"
+        color="white"
+        @click.prevent="$store.commit('ui/customerModal' , true)"
+        left
+      >
+        mdi-plus
+      </v-icon>
       <!-- <v-btn
         tile
         color="primary"
@@ -107,10 +112,23 @@ export default {
       this.$store.dispatch('myAuth/unReserve').then(() => {
         localStorage.removeItem('auth._token.local')
         localStorage.removeItem('auth._token.local')
-          this.$router.push('/login')
-
+        this.$router.push('/login')
       })
-      
+    }
+  },
+  created() {
+    if (this.$route.name != 'login') {
+      if (this.$auth.user.FixEmpStore != 0) {
+        this.items = items.filter((item) => {
+          return item.to === '/orders' ? null : item
+        })
+      } else {
+        if (this.$auth.user.SecLevel < 4) {
+          this.items = items.filter((item) => {
+            return item.to == '/stock' ||  item.to == '/stock_rpt' ? null : item
+          })
+        }
+      }
     }
   }
 }

@@ -9,4 +9,14 @@ export default [
         title: "sidebar.orders",
         to: `/orders`
     },
+    {
+        icon: 'mdi-database-lock-outline',
+        title: "sidebar.stock",
+        to: `/stock`
+    },
+    {
+        icon: 'mdi-numeric',
+        title: "sidebar.stock_rpt",
+        to: `/stock_rpt`
+    },
 ]

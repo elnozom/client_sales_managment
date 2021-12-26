@@ -11,6 +11,11 @@
   "from":"من",
   "delete" : "حذف",
   "to":"الي",
+  "delivery_fee" : "قيمة الشحن",
+  "driver_name" : "اسم السائق",
+  "unknown" : "غير معرف",
+  "driver" : "السائق",
+  "amount" : "القيمة",
   "close" : "غلق",
   "item_has_stop_sale" : "هذا المنتج موقوف عليه البيع في الوقت الحالي",
   "order_is_posted" : "لا يمكن تعديل هذا الطلب لانه قد تم ترحيله",
@@ -20,6 +25,8 @@
   "this_order_dosn't_belong_to_you" : "هذا الطلب لا يمكنك التعديل عليه",
   "order_is_reserved" : "لا يمكن تعديل هذا الطلب لانه تحت التجهيز",
   "create" : "اضافة",
+  "finished" : "تم النتهاء",
+  "choose_store" : "من فضلك قم باختيار الفرع",
   "login": {
     "username": "الاسم",
     "password": "كلمة المرور"
@@ -34,7 +41,8 @@
     "view":"عرض",
     "delete":"حذف",
     "reserved": "جاري العمل",
-    "not_reserved": "تم الانتهاء",
+    "under_edit": "قيد المراجعة",
+    "under_ditributte": "تحت الصرف",
     "limited" : "محدود",
     "stop_sale": "وقف البيع",
     "not_stop_sale":"يمكن البيع",
@@ -42,11 +50,14 @@
     "orders": "الطلبات"
   },
   "sidebar": {
+    "stock_rpt" : "ارصدة المنتجات",
     "products": "المنتجات",
+    "stock" :"المخزن",
     "orders": "الطلبات",
     "login": "تسجيل الدخول"
   },
   "form": {
+    "send" : "صرف",
     "close" : "غلق المستند",
     "save" : "حفظ المستند",
     "discard" : "غلق المستند",
@@ -63,6 +74,8 @@
   },
   "inputs":{
     "search":"بحث",
+    "SalesOrderNo" : "امر بيع",
+    "limited" : "الكمية المسموحة",
     "qnt":"الكمية",
     "customer":"عميل",
     "item":"ادخل المنتج",
@@ -86,12 +99,17 @@
     "max" : "هذا السعر اعلي من اعلي سعر يمكن البيع به",
     "percent" :"هذا الحقل لابد ان يكون نسبة"
   },
+  "stock_employee" : "مسؤول المخزن",
   "columns": {
     "code": "الكود",
+    "SalesNo" : "امر بيع",
+    "storeName" : "اسم المخزن",
     "employee": "الموظف",
     "totla": "الاجمالي",
     "docNo": "رقم الطلب",
     "docDate": "التاريخ",
+    "driverName" : "اسم السائق",
+    "deliveryFee" : "قيمة الشحن",
     "reserved" : "الحالة",
     "qntReserved":"الكمية المحجوزة",
     "store":" الفرع",
@@ -124,5 +142,9 @@
     "this_order_dosn't_belong_to_you":"عفوا انت لا تملك صلاحية التعديل علي هذا الطلب",
     "delete": " حذف ",
     "QntAntherUnit" : "الكمية بالكرتونة"
-  }
+  },
+  "undefined" : "غير معرف",
+  "out_of_stock" : "هذا المنتج غير متوفر حاليا بهذه الكمية",
+  "cancle" : "غلق",
+  "continue" : "استمرار"
 }

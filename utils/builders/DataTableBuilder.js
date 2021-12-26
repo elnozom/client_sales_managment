@@ -30,6 +30,10 @@ export default class DataTableBuilder {
         this.datatable.filters = filters
         return this
     }
+    setFilterable(filterable) {
+        this.datatable.filterable = filterable
+        return this
+    }
 
     setUrl(url) {
         this.datatable.url = url

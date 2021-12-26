@@ -39,9 +39,21 @@ export const editOrder = (ctx, item) => {
         if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
 
         return
-
     }
-    ctx.$router.push({ name: 'orders-customer-edit', query: { 'date' :item.DocDate, 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo }, params: { customer: item.CustomerSerial } })
+    if (ctx.$auth.user.SecLevel >= 4){
+        const payload = {
+            "AuditCode" : ctx.$auth.user.EmpCode,
+            "Reserved" : true,
+            "Serial" : item.Serial,
+        }
+        ctx.$store.dispatch('order/updateOrder' , payload)
+    }
+    const finished = (item.Finished == 0) ? 0 : 1
+    ctx.$router.push({ name: 'orders-customer-edit', query: { finished, 'date' :item.DocDate, 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo ,'driverName':item.DriverName , 'deliveryFee': item.DeliveryFee }, params: { customer: item.CustomerSerial } })
+}
+export const editOrderStore = (ctx, item) => {
+    const finished = (item.Finished || ctx.$auth.user.FixEmpStore == 0) ? 1 : 0
+    ctx.$router.push({ name: 'stock-edit', query: { 'store' : item.StoreName , finished , 'date' :item.DocDate,'serial': item.Serial,'no' : item.DocNo,'customer_code': item.CustomerCode, 'customer_name': item.CustomerName ,'emp_name': item.EmpName ,'stock_emp_name': item.StcEmpName ,'driverName':item.DriverName , 'deliveryFee': item.DeliveryFee }})
 }
 
 export const createOrder = (ctx) => {

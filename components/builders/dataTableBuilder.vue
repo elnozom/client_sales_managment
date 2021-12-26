@@ -6,6 +6,7 @@
       :loading="loading"
       :items-per-page="100"
       :search="search"
+      :custom-filter="CustomSearch"
       fixed-header
       height="400px"
       sort-by="Name"
@@ -13,59 +14,19 @@
     >
       <template v-slot:top>
         <div class="spacing-playground px-6">
+
           <v-row>
+           
             <v-col
+            v-if="opts.filterable"
               cols="3"
-              v-for="(fil, index) in opts.filters"
-              :key="index"
             >
-              <v-text-field
-                v-model="form[fil.prop]"
-                :clearable="fil.clearable"
-                @keypress="isNumber($event)"
-                @input="filter()"
-                v-if="fil.type == 'number'"
-                :label="$t(`inputs.${fil.label}`)"
-              ></v-text-field>
-              <v-select
-                v-else-if="fil.type == 'select'"
-                :items="fil.items"
-                v-model="form[fil.prop]"
-                :clearable="fil.clearable"
-                :item-text="fil.itemText"
-                :item-value="fil.itemValue"
-                :label="$t(`inputs.${fil.label}`)"
-              ></v-select>
-              <v-menu
-                v-else-if="fil.type == 'date'"
-                :ref="fil.ref"
-                clearable
-                v-model="fil.menu"
-                :close-on-content-click="true"
-                :return-value.sync="fil.value"
-                transition="scale-transition"
-                offset-y
-                min-width="auto"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="form[fil.prop]"
-                    :label="fil.label"
-                    clearable
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="form[fil.prop]"
-                  clearable
-                  no-title
-                  scrollable
-                >
-                </v-date-picker>
-              </v-menu>
+             <v-switch
+                v-model="finished"
+                @change="filter"
+                :label="$t('finished')"
+              ></v-switch>
+              
               <!-- <builders-filter :filter="filter"/> -->
             </v-col>
             <v-col cols="8">
@@ -78,19 +39,7 @@
               >
               </v-text-field>
             </v-col>
-            <v-col
-              cols="4"
-              v-if="typeof opts.filters != 'undefined' && opts.filters.length > 0"
-            >
-              <v-btn
-                color="primary"
-                v-if="opts.rememberAble != false"
-                class="capitalize w-full"
-                @click.prevent="saveFilters()"
-              >
-                {{$t(`table.remember_my_choices`)}}
-              </v-btn>
-            </v-col>
+          
 
           </v-row>
           <div class="flex-end">
@@ -115,32 +64,42 @@
       </template>
 
       <template v-slot:[`item.LimitedQnt`]="{ item }">
-        <v-chip
-          @dblclick="update({Serial : item.Serial, LQvalue: false})"
-          class="ma-2"
-          color="red"
-          label
-          text-color="white"
-          v-if="item.LimitedQnt"
+        <v-edit-dialog
+          @save="!isNaN(updatedLimited) ? update({Serial:item.Serial, LQvalue: parseFloat(updatedLimited)}) : ''"
         >
-          <v-icon left>
-            mdi-lock-alert-outline
-          </v-icon>
-          {{$t('table.limited')}}
-        </v-chip>
-        <v-chip
-          class="ma-2"
-          @dblclick="update({Serial : item.Serial, LQvalue: true})"
-          color="green"
-          label
-          text-color="white"
-          v-else
-        >
-          <v-icon left>
-            mdi-lock-open-variant-outline
-          </v-icon>
-          {{$t('table.not_limited')}}
-        </v-chip>
+          <v-chip
+            class="ma-2"
+            color="red"
+            label
+            text-color="white"
+            v-if="item.LimitedQnt > 0"
+          >
+            <v-icon left>
+              mdi-lock-alert-outline
+            </v-icon>
+            {{$t('table.limited')}} : 
+            {{item.LimitedQnt}}
+          </v-chip>
+          <v-chip
+            class="ma-2"
+            color="green"
+            label
+            text-color="white"
+            v-else
+          >
+            <v-icon left>
+              mdi-lock-open-variant-outline
+            </v-icon>
+            {{$t('table.not_limited')}}
+          </v-chip>
+          <template v-slot:input>
+             <v-text-field
+                v-model="updatedLimited"
+                ref="limited"
+                :label="$t(`inputs.limited`)"
+              ></v-text-field>
+            </template>
+        </v-edit-dialog>
       </template>
       <template v-slot:[`item.Reserved`]="{ item }">
         <v-chip
@@ -169,6 +128,18 @@
         </v-chip>
         <v-chip
           class="ma-2"
+          color="purple"
+          label
+          text-color="white"
+          v-else-if="item.Finished == 1"
+        >
+          <v-icon left>
+            mdi-arrow-decision
+          </v-icon>
+          {{$t('table.under_ditributte')}}
+        </v-chip>
+        <v-chip
+          class="ma-2"
           color="green"
           label
           text-color="white"
@@ -177,8 +148,9 @@
           <v-icon left>
             mdi-lock-open-variant-outline
           </v-icon>
-          {{$t('table.not_reserved')}}
+          {{$t('table.under_edit')}}
         </v-chip>
+        
       </template>
       <template v-slot:[`item.StopSale`]="{ item }">
         <v-chip
@@ -243,22 +215,75 @@
         </v-edit-dialog>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
+        <div v-if="opts.editable">
+          <div v-if=" $route.name == 'stock'">
 
-        <v-btn
-          v-if="opts.editable !== false && (typeof item.closed_at == 'undefined' || item.closed_at == null)"
-          @click="editItem(item)"
-          color="primary"
-          class="mr-4"
-        >
-          <v-icon
-            small
-            class="mr-2"
-          >
-            mdi-pencil
-          </v-icon>
-          {{$t('table.edit')}}
+            <v-btn
+              v-if="form.finished == 0 && $auth.user.FixEmpStore > 0"
+              @click="editItem(item)"
+              color="primary"
+              class="mr-4"
+            >
+              <v-icon
+                small
+                class="mr-2"
+              >
+                mdi-pencil
+              </v-icon>
+              {{$t('table.edit')}}
 
-        </v-btn>
+            </v-btn>
+            <v-btn
+              v-else
+              @click="editItem(item)"
+              color="warning"
+              class="mr-4 mb-0"
+            >
+              <v-icon
+                small
+                class="mx-2"
+              >
+                mdi-eye
+              </v-icon>
+              {{$t('table.view')}}
+            </v-btn>
+          
+          </div>
+          <div v-else>
+
+            <v-btn
+              v-if="form.finished == 0"
+              @click="editItem(item)"
+              color="primary"
+              class="mr-4"
+            >
+              <v-icon
+                small
+                class="mr-2"
+              >
+                mdi-pencil
+              </v-icon>
+              {{$t('table.edit')}}
+
+            </v-btn>
+            <v-btn
+              v-else
+              @click="editItem(item)"
+              color="warning"
+              class="mr-4 mb-0"
+            >
+              <v-icon
+                small
+                class="mx-2"
+              >
+                mdi-eye
+              </v-icon>
+              {{$t('table.view')}}
+            </v-btn>
+          
+          </div>
+
+        </div>
         <v-btn
           v-if="opts.viewable"
           @click="viewItem(item)"
@@ -273,10 +298,6 @@
           </v-icon>
           {{$t('table.view')}}
         </v-btn>
-        <slot
-          name="itemActions"
-          :item="item"
-        ></slot>
 
       </template>
       <template v-slot:no-data>

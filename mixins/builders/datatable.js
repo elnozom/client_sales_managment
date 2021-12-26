@@ -13,12 +13,14 @@ export default {
             createLoading :false,
             PMax: '',
             datatable: {},
+            finished:false,
             form: {
-                StoreCode: 1
+                finished: 0
             },
             apiUrl: process.env,
             search: "",
             loading: false,
+            updatedLimited: "",
             options: {}
         }
     },
@@ -109,8 +111,24 @@ export default {
             }
             this.$store.commit('ui/setSnackbar', snackbar)
         },
+        updateLimited(Serial) {
+            if(!isNaN(this.updatedLimited)) this.update({Serial, LQvalue: parseFloat(this.updatedLimited)})
+        },
+        CustomSearch(value, search, item) {
+            if(typeof item.SalesOrderNo !== 'undefined'){
+                return value != null &&
+                  search != null &&
+                  typeof value === 'string' &&
+                  item.SalesOrderNo.toString().indexOf(search) !== -1
+            }
+            return value != null &&
+                  search != null &&
+                  typeof value === 'string' &&
+                  value.toString().indexOf(search) !== -1
+          },
         filter() {
-            this.getData(this.form)
+            this.form.finished = this.finished ? 1 : 0
+            this.getData()
             addParamsToLocation(this.form, this.$route.path)
         },
         deleteItem(item) {
@@ -134,6 +152,7 @@ export default {
 
     },
     created() {
+        this.form.store = this.$auth.user.FixEmpStore
         this.$bus.$on('productUpdated', () => {
             this.getData()
         })

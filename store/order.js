@@ -126,6 +126,21 @@ export const actions = {
                 })
         });
     },
+    stcClose({ commit }, payload) {
+        commit('loading', true)
+        return new Promise((resolve, reject) => {
+            Http.put(`orders/store/close/${payload.serial}/${payload.emp}`)
+                .then(res => {
+                    resolve(res.data)
+                    commit('loading', false)
+                })
+                .catch(err => {
+                    reject(err)
+                    commit('loading', false)
+                })
+        });
+    },
+    
     insertItem({ commit }, payload) {
         commit('loading', true)
         payload.StoreCode = parseInt(localStorage.getItem('store'))
@@ -163,11 +178,27 @@ export const actions = {
                 })
         });
     },
-    
-    updateOrderReserved({ commit }, payload) {
+    updateStcItem({ commit }, payload) {
         commit('loading', true)
         return new Promise((resolve, reject) => {
-            Http.post(`orders/reserve`, payload)
+            Http.put(`orders/store/update`, payload)
+                .then(res => {
+                    resolve(res.data)
+                    commit('loading', false)
+                })
+                .catch(err => {
+                    reject(err)
+                    commit('loading', false)
+
+                })
+        });
+    },
+
+    updateOrder({ commit }, payload) {
+        commit('loading', true)
+        const url = `orders/update/${payload.Serial}`
+        return new Promise((resolve, reject) => {
+            Http.put(url, payload)
                 .then(res => {
                     resolve(res.data)
                     commit('loading', false)
@@ -180,6 +211,7 @@ export const actions = {
                 })
         });
     },
+    
     deleteItem({ commit }, payload) {
         commit('loading', true)
         return new Promise((resolve, reject) => {

@@ -162,7 +162,7 @@
               icon="mdi-content-save-all-outline"
               @clicked="submit"
               text="form.submit"
-              :loading="insertLoading"
+              :loading="loading"
               :disabled="!opts.valid && opts.errors.length == 0"
             />
             
