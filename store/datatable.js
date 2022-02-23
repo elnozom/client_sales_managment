@@ -4,12 +4,17 @@ import {serializeQuery} from '@/utils/helpers/Global.js'
 export const state = () => ({
     stockItems: [],
     stockLoading: false,
+    orderItemsDatatable:{
+        items: [],
+        loading: false,
+        search: '',
+    },
     stcOrderItemsDatatable:{
         items: [],
         loading: false,
         search: '',
     },
-    orderItemsDatatable: {
+    invoiceItemsDatatable: {
         items: [],
         loading: false,
         search: '',
@@ -21,14 +26,20 @@ export const getters = {
     stockItems: state => state.stockItems,
     stockLoading: state => state.stockLoading,
     stcOrderItemsDatatable: state => state.stcOrderItemsDatatable,
+    invoiceItemsDatatable: state => state.invoiceItemsDatatable,
+    
 }
 
 export const mutations = {
     stockItems(state, payload) {
         state.stockItems = payload
     },
+    
     stockLoading(state, payload) {
         state.stockLoading = payload
+    },
+    invoiceLoading(state, payload) {
+        state.invoiceItemsDatatable.loading = payload
     },
     orderItemsDatatableItems(state, payload) {
         state.orderItemsDatatable.items = payload
@@ -39,6 +50,10 @@ export const mutations = {
     prependOrderItemsDatatable(state, payload) {
         state.orderItemsDatatable.items.unshift(payload)
     },
+    prependInvoiceItemsDatatable(state, payload) {
+        state.invoiceItemsDatatable.items.unshift(payload)
+    },
+    
 
     updateOrderItem(state, payload) {
         for(let item in state.orderItemsDatatable.items){
@@ -60,11 +75,22 @@ export const mutations = {
             }
         }
     },
+
     stcOrderItemsDatatable(state, payload) {
         state.stcOrderItemsDatatable.items = payload
     },
+    invoiceItems(state, payload) {
+        state.invoiceItemsDatatable.items = payload
+    },
+    
+    
     reset(state) {
         state.orderItemsDatatable = {
+            items: [],
+            loading: false,
+            search: '',
+        }
+        state.invoiceItemsDatatable = {
             items: [],
             loading: false,
             search: '',
@@ -122,7 +148,23 @@ export const actions = {
             })
         });
     },
+    getInvoiceItems({commit} , serial){
+        commit('invoiceLoading' , true)
+        return new Promise((resolve , reject) => {
+            Http.get(`invoice/${serial}`)
+            .then(res => {
+                commit('invoiceItems' , res.data)
+                commit('invoiceLoading' , false)
+                resolve(res.data)
+            })
+            .catch(err => {
+                commit('invoiceLoading' , false)
+                reject(err)
+            })
+        });
+    },
 
+    
 
    
 }

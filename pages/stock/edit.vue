@@ -80,7 +80,7 @@
           <template v-slot:no-data>
             <span>{{$t('table.no_data')}}</span>
           </template>
-          <template v-slot:footer>
+          <template v-slot:footer v-if="!isDisabled">
             <base-btn
               :classNames="['primary' , 'my-5']"
               icon="mdi-send"

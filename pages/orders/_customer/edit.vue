@@ -491,7 +491,7 @@ export default {
     async print() {
       var ComponentClass = Vue.extend(invoice)
       var instance = new ComponentClass({
-        propsData: { items: this.datatable.items, query: this.$route.query }
+        propsData: { TotalCash : this.totals.TotalCash , isInvoice: false ,items: this.datatable.items, query: this.$route.query  , options: this.$store.getters['global/posOptions']  }
       })
       instance.$mount()
       const prtHtml = instance.$el.innerHTML

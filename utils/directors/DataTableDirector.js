@@ -1,4 +1,4 @@
-import { viewProduct, editProduct ,editOrderStore, editOrder , createOrder } from "@/utils/helpers/DataTableActions.js"
+import { viewProduct, editProduct ,editOrderStore, editOrder , createOrder , editInvoice,createInvoice } from "@/utils/helpers/DataTableActions.js"
 import {SalesOrderNo} from '@/utils/helpers/Inputs.js'
 export default class DatatableDirector {
     constructor(builder , ctx) {
@@ -143,6 +143,28 @@ export default class DatatableDirector {
             .build()
     }
 
-    
 
+
+    makeInvoices() {
+        let headers = [
+            { text: this.ctx.$t('columns.docNo'), value: 'DocNo', align: "center" },
+            { text: this.ctx.$t('columns.empName'), value: 'EmpName', align: "center" },
+            { text: this.ctx.$t('columns.empCode'), value: 'EmpCode', align: "center" },
+            { text: this.ctx.$t('columns.totalCash'), value: 'TotalCash', align: "center" },
+            { text: this.ctx.$t('columns.docDate'), value: 'DocDate', align: "center" },
+            { text: this.ctx.$t('columns.reserved'), value: 'Reserved', align: "center" },
+            { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
+        ]
+        
+        return this.builder
+            .setTitle('invoices')
+            .setUrl('invoice')
+            .setEdit(editInvoice)
+            .setEditable(true)
+            .setFilterable(true)
+            .setCreateAble(true)
+            .setCreate(createInvoice)
+            .setHeaders(headers)
+            .build()
+    }
 };

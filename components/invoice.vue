@@ -8,96 +8,116 @@
       :light="true"
       flat
     >
-      <v-card-title>
-        <div class="d-flex w-full justify-space-between">
-          <p class="invoice__no">
-            رقم : #{{query.no}}
-          </p>
-          <p class="invoice__no">
-            التاريخ : {{query.date}}
-          </p>
-        </div>
-      </v-card-title>
-      <v-card-subtitle class="my-12">
-        <div class="d-flex w-full justify-space-between">
-          <div class="">
-            <h2 class="mb-4">امر بيع</h2>
-            <p class="block">العميل :{{query.customer_name}} / {{this.query.customer_code}} </p>
-            
-            <p class="block">مخزن :{{items[0].StoreName}} </p>
+      <div >
+        <v-card-text>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
 
-          </div>
-          <img
-            style="height : 60px"
-            src="~/assets/img/logo.png"
-            alt=""
-          >
-        </div>
-        <div class="divider"></div>
-      </v-card-subtitle>
-      <v-card-text>
-        <v-simple-table>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-right">
-                  كود الصنف
-                </th>
-                <th class="text-right">
-                  اسم الصنف
-                </th>
-                <th class="text-right">
-                  السعر
-                </th>
-                <th class="text-right">
-                  الكمية
-                </th>
-                <th class="text-right">
-                  الكمية بالكرتونة
-                </th>
-                <th class="text-right">
-                  الاجمالي
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="item in items"
-                :key="item.Name"
-              >
-                <td class="text-right">{{ item.BarCode }}</td>
-                <td class="text-right">{{ item.ItemName }}</td>
-                <td class="text-right">{{ item.Price }}</td>
-                <td class="text-right">{{ item.Qnt }}</td>
-                <td class="text-right">{{ item.QntAntherUnit }}</td>
-                <td class="text-right">{{ item.Total }}</td>
-              </tr>
-              <tr>
-                <td
-                  class="text-right"
-                  colspan="5"
-                ></td>
-                <!-- <td class="text-right totlas">
-                  <div>اجمالي العبوات : {{totals.TotalPackages}}</div>
-                  <div>الاجمالي : EGP{{totals.TotalCash}}</div>
-                </td> -->
+                <tr>
+                <th>
+                   <img
+                    style="height : 80px"
+                    src="~/assets/img/dental.png"
+                    alt=""
+                  >
+                  <p class="invoice__no" v-if="isInvoice">
+                    فاتورة رقم : #{{query.no}}
+                  </p>
+                  <p class="invoice__no" v-else>
+                    طلب رقم : #{{query.no}}
+                  </p>
+              <!-- <p class="block">العميل :{{query.customer_name}} / {{this.query.customer_code}} </p> -->
+<p class="block">
+              التاريخ : {{query.date}}
+            </p>
+            <p class="block">سجل تجاري :{{options.BonMsg3}}</p>
+              <p class="block">بطاقة ضريبية :{{options.BonMsg4}} </p>
 
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-card-text>
+              <!-- <p class="block">العميل :{{query.customer_name}} / {{this.query.customer_code}} </p> -->
+              <p class="block">العميل :{{query.customer_name}} / {{query.customer_code}} </p>
+
+
+                  
+                </th>
+                </tr>
+                <tr>
+                  <th class="text-right">
+                    المسلسل
+                  </th>
+                  <th class="text-right" style="min-width:300px">
+                    اسم الصنف
+                  </th>
+                  <th class="text-right">
+                    السعر
+                  </th>
+                  <th class="text-right">
+                    الكمية
+                  </th>
+                  <th class="text-right" v-if="!isInvoice">
+                    الكمية بالكرتونة
+                  </th>
+                  <th class="text-right">
+                    الاجمالي
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item , index) in items"
+                  :key="item.Name"
+                >
+                  <td class="text-right">{{ index + 1 }}</td>
+                  <td class="text-right" style="min-width:300px">{{ item.ItemName }}</td>
+                  <td class="text-right">{{ item.Price }}</td>
+                  <td class="text-right">{{ item.Qnt }}</td>
+                  <td class="text-right" v-if="!isInvoice">{{ item.QntAntherUnit }}</td>
+                  <td class="text-right">{{ item.Total }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+      </div>
+      <!-- <div style="position :fixed;bottom:0; width: 100%;right: 0;padding: 0 50px;">
+        <p class="text-center" style="border: 1px solid;padding 10px; margin-top:20px">{{convertTotalToWords}} </p>
+        <p class="text-center" style="border: 1px solid;padding 10px; margin-top:20px">{{options.BonMsg5}}</p>
+      </div> -->
     </v-card>
   </div>
 </template>
 
 
 <script>
+import tafqeet from '@/utils/helpers/Tafqeet.js'
 export default {
+  methods:{
+    tafqeet,
+  },
+  computed:{
+    convertTotalToWords:{
+      get: function () {
+        let total = (this.TotalCash + (this.TotalCash * .14)).toFixed(2)
+          let fractions = total.toString().split('.')
+          let pounds = `${tafqeet(fractions[0])} جنيها`
+          let cents =  typeof fractions[1] == 'undefined' || fractions[1] == '00' ? '' : `و ${tafqeet(fractions[1])} قرشا`
+          let val = `${pounds} ${cents} فقط لا غير`
+          return val
+      }
+    }
+  },
     props:[
         'items',
         'query',
-        'store'
+        'store',
+        'isInvoice',
+        'TotalCash',
+        'options'
     ]
 }
 </script>
+<style scoped>
+p{
+  margin:0
+}
+</style>

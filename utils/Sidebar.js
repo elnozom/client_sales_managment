@@ -19,4 +19,9 @@ export default [
         title: "sidebar.stock_rpt",
         to: `/stock_rpt`
     },
+    {
+        icon: 'mdi-receipt',
+        title: "sidebar.invoices",
+        to: `/invoice`
+    },
 ]

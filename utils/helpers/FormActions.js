@@ -49,7 +49,9 @@ export const chooseCustomer = async (ctx) => {
             return item.AccountName === ctx.form[input.prop] ? item : ''
         })[0]
         ctx.form.customer = null
-        ctx.$router.push({ name: 'orders-customer-edit', query: { 'customer_code': customer.AccountCode, 'customer_name': customer.AccountName }, params: { customer: customer.Serial } })
+        console.log(ctx.$route.name)
+        let routeName = ctx.$route.name == "invoice" ? 'invoice-edit' : 'orders-customer-edit'
+        ctx.$router.push({ name: routeName, query: { 'customer_code': customer.AccountCode, 'customer_name': customer.AccountName }, params: { customer: customer.Serial } })
         ctx.$store.commit('ui/customerModal', false)
     }
     ctx.opts.loading = false

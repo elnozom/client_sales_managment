@@ -59,7 +59,52 @@ export const editOrderStore = (ctx, item) => {
 export const createOrder = (ctx) => {
     ctx.$store.commit('ui/customerModal', true)
 }
+export const createInvoice = (ctx) => {
+    ctx.$store.commit('ui/customerModal', true)
+}
 
+
+export const editInvoice = (ctx, item) => {
+    if(item.Reserved == true){
+        const snackbar = {
+            active: true,
+            text: 'order_is_reserved',
+        }
+        if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+    }
+    if(item.StkTr01Serial > 0){
+        const snackbar = {
+            active: true,
+            text: 'order_is_posted',
+        }
+        if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+    }
+    if (!(ctx.$auth.user.SecLevel >= 4 || ctx.$auth.user.EmpCode == item.EmpCode)) {
+        const snackbar = {
+            active: true,
+            text: 'this_order_dosn\'t_belong_to_you',
+        }
+        if (!ctx.$store.getters['ui/snackbar'].active) ctx.$store.commit('ui/setSnackbar', snackbar)
+
+        return
+    }
+    if (ctx.$auth.user.SecLevel >= 4){
+        const payload = {
+            "AuditCode" : ctx.$auth.user.EmpCode,
+            "Reserved" : true,
+            "Serial" : item.Serial,
+        }
+        ctx.$store.dispatch('order/updateOrder' , payload)
+    }
+    const finished = (item.Finished == 0) ? 0 : 1
+
+    console.log(item.EmpName)
+    ctx.$router.push({ name: 'invoice-edit', query: { finished, 'date' :item.DocDate, 'serial': item.Serial, 'EmpCode': item.EmpCode, 'customer_code': item.CustomerCode, 'customer_name': item.CustomerName , 'no' : item.DocNo , 'customer_serial' :  item.CustomerSerial ,  'store_code' :  item.StoreCode , 'store_name' :  item.StoreName , 'emp_code' : item.EmpCode , "emp_name" : item.EmpName } })
+}
 
 
 
