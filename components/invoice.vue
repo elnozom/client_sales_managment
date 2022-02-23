@@ -14,8 +14,7 @@
             <template v-slot:default>
               <thead>
                 <tr>
-                  
-                    <td style="text-align:center" colspan="5">
+                    <th style="text-align:center" colspan="5">
                       <img
                         style="height : 80px"
                         src="~/assets/img/dental.png"
@@ -34,21 +33,21 @@
                       >
                         طلب رقم : #{{query.no}}
                       </p>
-                    </td>
+                    </th>
                   
                 </tr>
                 <tr>
                  
-                    <td colspan="2">
+                    <th colspan="2">
                       <p class="block">بطاقة ضريبية :{{options.BonMsg4}} </p>
                       <p class="block">سجل تجاري :{{options.BonMsg3}}</p>
-                    </td>
-                    <td colspan="3">
+                    </th>
+                    <th colspan="3">
                        <p class="block">
                         التاريخ : {{query.date}}
                       </p>
                       <p class="block">العميل :{{query.customer_name}} / {{query.customer_code}} </p>
-                    </td>
+                    </th>
                   
                 </tr>
                 <tr>
@@ -100,10 +99,10 @@
               <tfoot>
                 <tr>
                   <td colspan="5">
-                    <p
+                    <!-- <p
                       class="text-center"
                       style="border: 1px solid;padding 10px; margin-top:20px"
-                    >{{convertTotalToWords}} </p>
+                    >{{convertTotalToWords}} </p> -->
                     <p
                       class="text-center"
                       style="border: 1px solid;padding 10px; margin-top:20px"
@@ -115,10 +114,7 @@
           </v-simple-table>
         </v-card-text>
       </div>
-      <!-- <div style="position :fixed;bottom:0; width: 100%;right: 0;padding: 0 50px;">
-        <p class="text-center" style="border: 1px solid;padding 10px; margin-top:20px">{{convertTotalToWords}} </p>
-        <p class="text-center" style="border: 1px solid;padding 10px; margin-top:20px">{{options.BonMsg5}}</p>
-      </div> -->
+
     </v-card>
   </div>
 </template>
