@@ -21,8 +21,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
 import { initApp } from '@/utils/helpers/Global.js'
+Vue.filter('price', function (value) {
+     if (!value) return ''
+     return `EGP${value.toFixed(2)}`
+  })
 export default {
+  
   computed: {
     ...mapGetters({
       isLoading: 'ui/isLoading'

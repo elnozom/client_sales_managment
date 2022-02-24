@@ -148,6 +148,7 @@ export default class DatatableDirector {
     makeInvoices() {
         let headers = [
             { text: this.ctx.$t('columns.docNo'), value: 'DocNo', align: "center" },
+            { text: this.ctx.$t('customer'), value: 'CustomerName', align: "center" },
             { text: this.ctx.$t('columns.empName'), value: 'EmpName', align: "center" },
             { text: this.ctx.$t('columns.empCode'), value: 'EmpCode', align: "center" },
             { text: this.ctx.$t('columns.totalCash'), value: 'TotalCash', align: "center" },

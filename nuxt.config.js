@@ -71,7 +71,7 @@ export default {
 
   server :{
     port: "8081",
-    host: "192.168.1.40"
+    host: "192.168.1.10"
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules

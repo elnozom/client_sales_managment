@@ -1,112 +1,90 @@
 <template>
-  <div
-    class="invoice"
-    id="print"
-    ref="invoice"
-  >
-    <v-card
-      :light="true"
-      flat
-    >
+  <div class="invoice" id="print" ref="invoice">
+    <v-card :light="true" flat>
       <div>
         <v-card-text>
           <v-simple-table>
             <template v-slot:default>
               <thead>
                 <tr>
-                    <th style="text-align:center" colspan="5">
-                      <img
-                        style="height : 80px"
-                        src="~/assets/img/dental.png"
-                        alt=""
-                      >
-                    <h2 class="mb-4">{{options.ReportTitle}}</h2>
-                      <p
-                        class="invoice__no"
-                        v-if="isInvoice"
-                      >
-                        فاتورة رقم : #{{query.no}}
-                      </p>
-                      <p
-                        class="invoice__no"
-                        v-else
-                      >
-                        طلب رقم : #{{query.no}}
-                      </p>
-                    </th>
-                  
+                  <th style="text-align: center" colspan="5">
+                    <img
+                      style="height: 80px"
+                      src="~/assets/img/dental.png"
+                      alt=""
+                    />
+                    <h2 class="mb-4">{{ options.ReportTitle }}</h2>
+                    <p class="invoice__no" v-if="isInvoice">
+                      فاتورة رقم : #{{ query.no }}
+                    </p>
+                    <p class="invoice__no" v-else>طلب رقم : #{{ query.no }}</p>
+                  </th>
                 </tr>
                 <tr>
-                 
-                    <th colspan="2">
-                      <p class="block">بطاقة ضريبية :{{options.BonMsg4}} </p>
-                      <p class="block">سجل تجاري :{{options.BonMsg3}}</p>
-                    </th>
-                    <th colspan="3">
-                       <p class="block">
-                        التاريخ : {{query.date}}
-                      </p>
-                      <p class="block">العميل :{{query.customer_name}} / {{query.customer_code}} </p>
-                    </th>
-                  
+                  <th colspan="2">
+                    <p class="block">بطاقة ضريبية :{{ options.BonMsg4 }}</p>
+                    <p class="block">سجل تجاري :{{ options.BonMsg3 }}</p>
+                  </th>
+                  <th colspan="3">
+                    <p class="block">التاريخ : {{ query.date }}</p>
+                    <p class="block">
+                      العميل :{{ query.customer_name }} /
+                      {{ query.customer_code }}
+                    </p>
+                  </th>
                 </tr>
                 <tr>
-                  <th class="text-right">
-                    المسلسل
-                  </th>
-                  <th
-                    class="text-right"
-                    style="min-width:300px"
-                  >
-                    اسم الصنف
-                  </th>
-                  <th class="text-right">
-                    السعر
-                  </th>
-                  <th class="text-right">
-                    الكمية
-                  </th>
-                  <th
-                    class="text-right"
-                    v-if="!isInvoice"
-                  >
-                    الكمية بالكرتونة
-                  </th>
-                  <th class="text-right">
-                    الاجمالي
-                  </th>
+                  <th class="text-right">المسلسل</th>
+                  <th class="text-right" style="min-width: 300px">اسم الصنف</th>
+                  <th class="text-right">السعر</th>
+                  <th class="text-right">الكمية</th>
+                  <th class="text-right" v-if="!isInvoice">الكمية بالكرتونة</th>
+                  <th class="text-right">الاجمالي</th>
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="(item , index) in items"
-                  :key="item.Name"
-                >
+                <tr v-for="(item, index) in items" :key="item.Name">
                   <td class="text-right">{{ index + 1 }}</td>
-                  <td
-                    class="text-right"
-                    style="min-width:300px"
-                  >{{ item.ItemName }}</td>
+                  <td class="text-right" style="min-width: 300px">
+                    {{ item.ItemName }}
+                  </td>
                   <td class="text-right">{{ item.Price }}</td>
                   <td class="text-right">{{ item.Qnt }}</td>
-                  <td
-                    class="text-right"
-                    v-if="!isInvoice"
-                  >{{ item.QntAntherUnit }}</td>
+                  <td class="text-right" v-if="!isInvoice">
+                    {{ item.QntAntherUnit }}
+                  </td>
                   <td class="text-right">{{ item.Total }}</td>
+                </tr>
+                <tr >
+                  <td colspan="5" class="totlas w-full" style="border: 1px solid;padding 20px;width:100%">
+                    <div class="d-flex w-full justify-space-between">
+                      <span class="text-right">الاجمالي: </span>
+                      <span class="text-left">{{TotalCash | price}}</span>
+                    </div>
+                    <div class="d-flex w-full justify-space-between">
+                      <span class="text-right">الضريبة(14%) :</span>
+                      <span class="text-left"> {{TotalCash * .14 | price}}</span>
+                    </div>
+                    <div class="d-flex w-full justify-space-between">
+                      <span class="text-right">الاجمالي الكلي: </span>
+                      <span class="text-left">{{TotalCash + (TotalCash * .14) | price}}</span>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="5">
-                    <!-- <p
-                      class="text-center"
-                      style="border: 1px solid;padding 10px; margin-top:20px"
-                    >{{convertTotalToWords}} </p> -->
+                  <td colspan="5" style="padding 20px;margin-top:20px">
+                      <p
+                        class="text-center"
+                        style="border: 1px solid;padding 10px; margin-top:20px"
+                      >{{convertTotalToWords}} </p>
                     <p
                       class="text-center"
                       style="border: 1px solid;padding 10px; margin-top:20px"
-                    >{{options.BonMsg5}}</p>
+                    >
+                      {{ options.BonMsg5 }}
+                    </p>
                   </td>
                 </tr>
               </tfoot>
@@ -114,7 +92,6 @@
           </v-simple-table>
         </v-card-text>
       </div>
-
     </v-card>
   </div>
 </template>
