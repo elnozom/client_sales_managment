@@ -6,7 +6,7 @@
       :loading="loading"
       :items-per-page="100"
       :search="search"
-      :custom-filter="CustomSearch"
+      
       fixed-header
       height="400px"
       sort-by="Name"
@@ -14,20 +14,104 @@
     >
       <template v-slot:top>
         <div class="spacing-playground px-6">
-
           <v-row>
-           
             <v-col
-            v-if="opts.filterable"
-              cols="3"
+              v-if="opts.hasDates"
+              cols="6"
             >
-             <v-switch
-                v-model="finished"
-                @change="filter"
+              <v-menu
+                v-model="dateFromMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    :label="$t('from')"
+                    prepend-icon="mdi-calendar-blank-outline"
+                    readonly
+                    clearable
+                    v-model="DateFrom"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <!-- // Determines the type of the picker - date for date picker, month for month picker -->
+                <v-date-picker
+                  locale="en-in"
+                  color="primary"
+                  @change="dateFromChanged"
+                  no-title
+                ></v-date-picker>
+              </v-menu>
+
+              <!-- <builders-filter :filter="filter"/> -->
+            </v-col>
+             <v-col
+              v-if="opts.hasDates"
+              cols="6"
+            >
+              <v-menu
+                v-model="dateToMenu"
+                :close-on-content-click="false"
+                    
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    clearable
+                    
+                    :label="$t('to')"
+                    prepend-icon="mdi-calendar-blank-outline"
+                    readonly
+                    v-model="DateTo"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <!-- // Determines the type of the picker - date for date picker, month for month picker -->
+                <v-date-picker
+                  locale="en-in"
+                  color="primary"
+                  @change="dateToChanged"
+                  no-title
+                ></v-date-picker>
+              </v-menu>
+
+              <!-- <builders-filter :filter="filter"/> -->
+            </v-col>
+            <v-col
+              v-if="opts.filterable"
+              cols="6"
+            >
+              <v-switch
+                @change="finishedChanged"
                 :label="$t('finished')"
               ></v-switch>
-              
+
+
               <!-- <builders-filter :filter="filter"/> -->
+            </v-col>
+            <v-col
+              v-if="opts.filterable && form.finished"
+              cols="6"
+            >
+              <v-combobox
+                @change="deletedChanged"
+                :items="deletedCombo"
+                :value="deletedCombo[0]"
+                item-text="name"
+                :label="$t('delete')"
+              ></v-combobox>
             </v-col>
             <v-col cols="8">
               <v-text-field
@@ -39,9 +123,9 @@
               >
               </v-text-field>
             </v-col>
-          
 
           </v-row>
+          
           <div class="flex-end">
 
             <v-btn
@@ -62,11 +146,11 @@
         </div>
 
       </template>
-
+      <template v-slot:[`item.TotalCash`]="{ item }">
+        {{item.TotalCash.toFixed(2)}}
+      </template>
       <template v-slot:[`item.LimitedQnt`]="{ item }">
-        <v-edit-dialog
-          @save="!isNaN(updatedLimited) ? update({Serial:item.Serial, LQvalue: parseFloat(updatedLimited)}) : ''"
-        >
+        <v-edit-dialog @save="!isNaN(updatedLimited) ? update({Serial:item.Serial, LQvalue: parseFloat(updatedLimited)}) : ''">
           <v-chip
             class="ma-2"
             color="red"
@@ -77,7 +161,7 @@
             <v-icon left>
               mdi-lock-alert-outline
             </v-icon>
-            {{$t('table.limited')}} : 
+            {{$t('table.limited')}} :
             {{item.LimitedQnt}}
           </v-chip>
           <v-chip
@@ -93,12 +177,12 @@
             {{$t('table.not_limited')}}
           </v-chip>
           <template v-slot:input>
-             <v-text-field
-                v-model="updatedLimited"
-                ref="limited"
-                :label="$t(`inputs.limited`)"
-              ></v-text-field>
-            </template>
+            <v-text-field
+              v-model="updatedLimited"
+              ref="limited"
+              :label="$t(`inputs.limited`)"
+            ></v-text-field>
+          </template>
         </v-edit-dialog>
       </template>
       <template v-slot:[`item.Reserved`]="{ item }">
@@ -150,7 +234,7 @@
           </v-icon>
           {{$t('table.under_edit')}}
         </v-chip>
-        
+
       </template>
       <template v-slot:[`item.StopSale`]="{ item }">
         <v-chip
@@ -233,23 +317,9 @@
               {{$t('table.edit')}}
 
             </v-btn>
-            <v-btn
-              v-else
-              @click="editItem(item)"
-              color="warning"
-              class="mr-4 mb-0"
-            >
-              <v-icon
-                small
-                class="mx-2"
-              >
-                mdi-eye
-              </v-icon>
-              {{$t('table.view')}}
-            </v-btn>
-          
+
           </div>
-          <div v-else>
+          <div v-else class="d-flex align-center">
 
             <v-btn
               v-if="form.finished == 0"
@@ -280,7 +350,36 @@
               </v-icon>
               {{$t('table.view')}}
             </v-btn>
-          
+            <v-chip
+              class="ma-2 pointer"
+              color="red"
+              label
+              text-color="white"
+              v-if="item.Deleted"
+            >
+              <v-icon left>
+                mdi-trash
+              </v-icon>
+              {{$t('table.deleted')}}
+            </v-chip>
+             <v-btn
+              @click="deleteInvoice(item.Serial)"
+              v-if="opts.hasDelete && form.finished && !item.Deleted"
+              color="danger"
+              class="my-4"
+            >
+              <v-icon
+                small
+                class="mr-2"
+              >
+                mdi-trash
+              </v-icon>
+              {{$t('table.delete')}}
+
+            </v-btn>
+
+            
+
           </div>
 
         </div>
@@ -298,6 +397,7 @@
           </v-icon>
           {{$t('table.view')}}
         </v-btn>
+        
 
       </template>
       <template v-slot:no-data>

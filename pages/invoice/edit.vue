@@ -180,7 +180,7 @@
             <v-edit-dialog
               @save="updatePrice(item)"
             >
-              {{ item.Price }}
+              {{ item.Price.toFixed(2) }}
               <template v-slot:input>
                 <v-text-field
                   prepend-icon="mdi-cash-multiple"
@@ -191,6 +191,9 @@
                 ></v-text-field>
               </template>
             </v-edit-dialog>
+          </template>
+          <template v-slot:[`item.Total`]="{ item }">
+              {{ item.Total.toFixed(2) }}
           </template>
           <template v-slot:[`item.Qnt`]="{ item }"  >
             <v-edit-dialog

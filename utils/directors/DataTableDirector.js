@@ -1,5 +1,5 @@
 import { viewProduct, editProduct ,editOrderStore, editOrder , createOrder , editInvoice,createInvoice } from "@/utils/helpers/DataTableActions.js"
-import {SalesOrderNo} from '@/utils/helpers/Inputs.js'
+import {SalesOrderNo , Finished , DateFrom} from '@/utils/helpers/Inputs.js'
 export default class DatatableDirector {
     constructor(builder , ctx) {
         this.builder = builder
@@ -156,13 +156,24 @@ export default class DatatableDirector {
             { text: this.ctx.$t('columns.reserved'), value: 'Reserved', align: "center" },
             { text: this.ctx.$t('columns.actions'), value: 'actions', align: "center" }
         ]
+
+        let filters = [
+            Finished,
+            DateFrom
+        ]
+
+
         
         return this.builder
             .setTitle('invoices')
             .setUrl('invoice')
             .setEdit(editInvoice)
             .setEditable(true)
+            .setDates(true)
+            .setFilters(filters)
             .setFilterable(true)
+            .setDeletedFilter(true)
+            .setDeleteable(true)
             .setCreateAble(true)
             .setCreate(createInvoice)
             .setHeaders(headers)

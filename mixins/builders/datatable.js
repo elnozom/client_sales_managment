@@ -8,8 +8,26 @@ export default {
         return {
             snack: false,
             snackColor: '',
+            dateFromMenu: false,
+            dateToMenu: false,
             snackText: '',
+            DateTo:'',
+            DateFrom:'',
             PMin: '',
+            deletedCombo:[
+                {
+                    name : this.$t('all'),
+                    value : null,
+                },
+                {
+                    name : this.$t('not_delete'),
+                    value : 0,
+                },
+                {
+                    name : this.$t('deleted'),
+                    value : 1,
+                },
+            ],
             createLoading :false,
             PMax: '',
             datatable: {},
@@ -29,7 +47,39 @@ export default {
             items: 'datatable/items'
         })
     },
+    watch:{
+        DateTo:{
+            handler:function(val){
+                this.form.DateTo = val
+                this.getData()
+            }
+        },
+        DateFrom:{
+            handler:function(val){
+                this.form.DateFrom = val
+                this.getData()
+            }
+        }
+    },
     methods: {
+        deletedChanged(val){
+            this.form.Deleted = val.value
+            this.getData()
+        },
+        dateFromChanged(val){
+            this.DateFrom = val
+            this.dateFromMenu = false
+            // this.getData()
+        },
+        dateToChanged(val){
+            this.DateTo = val
+            this.dateToMenu = false
+           
+        },
+        finishedChanged(val){
+            this.form.finished = val
+            this.getData()
+        },
         showStock(){
             console.log("asd")
             console.log("asd")
@@ -68,10 +118,14 @@ export default {
             }
             http.get(url)
                 .then(res => {
+                    addParamsToLocation(this.form, this.$route.path)
                     res.data = res.data === null ? [] : res.data
                     this.datatable.items = res.data
+                    console.log(res.data)
+                    console.log(this.datatable.items)
                     this.loading = false
                     this.$emit('fetched', res.data)
+
                     //  console.log(res.data[0].keys)
                 })
         },
@@ -126,15 +180,15 @@ export default {
                   typeof value === 'string' &&
                   value.toString().indexOf(search) !== -1
           },
-        filter() {
-            this.form.finished = this.finished ? 1 : 0
-            this.getData()
-            addParamsToLocation(this.form, this.$route.path)
-        },
+        
         deleteItem(item) {
-            this.$store.commit('ui/setDeleteModal', true)
-            this.$store.commit('global/setDeleteItem', { id: item.id, table: this.opts.table })
+            // this.$store.commit('ui/setDeleteModal', true)
+            // this.$store.commit('global/setDeleteItem', { id: item.id, table: this.opts.table })
+            this.$store.dispatch('deleteInvoice')
             //  this.$store.commit('global/setDeleteAction' , {action:'inventory/get' , payload : this.filters})
+        },
+        deleteInvoice(serial) {
+           http.delete(`invoice/${serial}`).then(() => this.getData())
         },
         editItem(item) {
             this.opts.edit(this, item)

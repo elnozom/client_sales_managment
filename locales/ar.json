@@ -33,8 +33,12 @@
     "username": "الاسم",
     "password": "كلمة المرور"
   },
+  "all" : "الكل",
+  "not_delete" : "غير ملغي",
+  "deleted" : "ملغي",
   "table": {
     "products": "المنتجات",
+    "deleted" : "تم الالغاء",
     "no_data": "لايوجد بيانات",
     "distibuted" : "تم الترحيل",
     "new_item":"اضافة",

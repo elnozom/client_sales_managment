@@ -96,3 +96,32 @@ export const SalesOrderNo = {
     label : 'SalesOrderNo',
 }
 
+
+
+export const Finished = {
+    type : "switch",
+    inputType : "switch",
+    prop : "Finished",
+    ref : "Finished",
+    label : 'Finished',
+}
+
+
+export const DateFrom = {
+    type : "date",
+    inputType : "date",
+    prop : "DateFrom",
+    ref : "DateFrom",
+    label : 'DateFrom',
+}
+
+
+
+export const DateTo = {
+    type : "date",
+    inputType : "date",
+    prop : "DateFrom",
+    ref : "DateFrom",
+    label : 'DateFrom',
+}
+

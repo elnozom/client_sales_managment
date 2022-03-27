@@ -22,15 +22,16 @@
                 </tr>
                 <tr>
                   <th colspan="2">
-                    <p class="block">بطاقة ضريبية :{{ options.BonMsg4 }}</p>
-                    <p class="block">سجل تجاري :{{ options.BonMsg3 }}</p>
-                  </th>
-                  <th colspan="3">
                     <p class="block">التاريخ : {{ query.date }}</p>
                     <p class="block">
                       العميل :{{ query.customer_name }} /
                       {{ query.customer_code }}
                     </p>
+                  </th>
+                  <th colspan="3">
+                    <p class="block">بطاقة ضريبية :{{ options.BonMsg4 }}</p>
+                    <p class="block">سجل تجاري :{{ options.BonMsg3 }}</p>
+                    
                   </th>
                 </tr>
                 <tr>
@@ -48,12 +49,12 @@
                   <td class="text-right" style="min-width: 300px">
                     {{ item.ItemName }}
                   </td>
-                  <td class="text-right">{{ item.Price }}</td>
+                  <td class="text-right">{{ item.Price.toFixed(2) }}</td>
                   <td class="text-right">{{ item.Qnt }}</td>
                   <td class="text-right" v-if="!isInvoice">
                     {{ item.QntAntherUnit }}
                   </td>
-                  <td class="text-right">{{ item.Total }}</td>
+                  <td class="text-right">{{ item.Total.toFixed(2) }}</td>
                 </tr>
                 <tr >
                   <td colspan="5" class="totlas w-full" style="border: 1px solid;padding 20px;width:100%">
@@ -62,7 +63,7 @@
                       <span class="text-left">{{TotalCash | price}}</span>
                     </div>
                     <div class="d-flex w-full justify-space-between">
-                      <span class="text-right">الضريبة(14%) :</span>
+                      <span class="text-right">ضريبة القيمة المضافة(14%) :</span>
                       <span class="text-left"> {{TotalCash * .14 | price}}</span>
                     </div>
                     <div class="d-flex w-full justify-space-between">
@@ -71,14 +72,19 @@
                     </div>
                   </td>
                 </tr>
+                <tr>
+                  <td colspan="5">
+                     <p
+                        class="text-center"
+                        style="border: 1px solid;padding 10px; margin-top:20px"
+                      >{{convertTotalToWords}} </p>
+                  </td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr>
                   <td colspan="5" style="padding 20px;margin-top:20px">
-                      <p
-                        class="text-center"
-                        style="border: 1px solid;padding 10px; margin-top:20px"
-                      >{{convertTotalToWords}} </p>
+                     
                     <p
                       class="text-center"
                       style="border: 1px solid;padding 10px; margin-top:20px"

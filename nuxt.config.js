@@ -9,7 +9,7 @@ export default {
 
 
   env :{
-    apiUrl:"http://134.209.230.113:8586/api/",
+    apiUrl:"http://nozom.myfirewall.co:8565/api/",
     storeCode:1,
   },
   // Target: https://go.nuxtjs.dev/config-target
@@ -71,7 +71,7 @@ export default {
 
   server :{
     port: "8081",
-    host: "192.168.1.10"
+    host: "192.168.1.40"
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -139,9 +139,9 @@ export default {
         },
         
         endpoints: {   
-          login: { url: `http://134.209.230.113:8586/api/login`, method: `post` },
-          logout: { url: `http://134.209.230.113:8586/api/employee/logout`, method: `post` },
-          user: { url: `http://134.209.230.113:8586/api/employee`, method: `get` }
+          login: { url: `http://nozom.myfirewall.co:8565/api/login`, method: `post` },
+          logout: { url: `http://nozom.myfirewall.co:8565/api/employee/logout`, method: `post` },
+          user: { url: `http://nozom.myfirewall.co:8565/api/employee`, method: `get` }
         }
       }
     }

@@ -10,6 +10,15 @@ export default class DataTableBuilder {
         this.datatable.table = table
         return this
     }
+    setDates(dates) {
+        this.datatable.hasDates = dates
+        return this
+    }
+    setDeletedFilter(val) {
+        this.datatable.deletedFilter = val
+        return this
+    }
+    
     setHeaders(headers) {
         this.datatable.headers = headers
         return this
@@ -69,8 +78,8 @@ export default class DataTableBuilder {
         this.datatable.viewable = viewable
         return this
     }
-    setDeleteble(deleteble) {
-        this.datatable.deleteble = deleteble
+    setDeleteable(val) {
+        this.datatable.hasDelete = val
         return this
     }
 
