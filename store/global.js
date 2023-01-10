@@ -46,16 +46,16 @@ export const actions = {
             })
         });
     },
-    getPosOptions({commit}){
-        return new Promise((resolve , reject) => {
-            Http.get(`invoice/options`)
-            .then(res => {
-                commit("posOptions" , res.data)
-               resolve(res.data)
-            })
-            .catch(err => {
-                reject(err)
-            })
-        });
-    },
+    // getPosOptions({commit}){
+    //     return new Promise((resolve , reject) => {
+    //         Http.get(`invoice/options`)
+    //         .then(res => {
+    //             commit("posOptions" , res.data)
+    //            resolve(res.data)
+    //         })
+    //         .catch(err => {
+    //             reject(err)
+    //         })
+    //     });
+    // },
 }

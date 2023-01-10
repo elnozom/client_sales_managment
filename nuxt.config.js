@@ -9,7 +9,7 @@ export default {
 
 
   env :{
-    apiUrl:"http://nozom.myfirewall.co:8565/api/",
+    apiUrl:"http://192.168.1.40:5001/api/",
     storeCode:1,
   },
   // Target: https://go.nuxtjs.dev/config-target
@@ -139,9 +139,9 @@ export default {
         },
         
         endpoints: {   
-          login: { url: `http://nozom.myfirewall.co:8565/api/login`, method: `post` },
-          logout: { url: `http://nozom.myfirewall.co:8565/api/employee/logout`, method: `post` },
-          user: { url: `http://nozom.myfirewall.co:8565/api/employee`, method: `get` }
+          login: { url: `http://192.168.1.40:5001/api/login`, method: `post` },
+          logout: { url: `http://192.168.1.40:5001/api/employee/logout`, method: `post` },
+          user: { url: `http://192.168.1.40:5001/api/employee`, method: `get` }
         }
       }
     }
